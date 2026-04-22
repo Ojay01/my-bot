@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Signals{% endblock %}
+
+{% block content %}
+<h1>Signals</h1>
+
+<section class="stats">
+  <div class="stat stat-win">
+    <div class="stat-label">Taken</div>
+    <div class="stat-value">{{ taken }}</div>
+  </div>
+  <div class="stat stat-neutral">
+    <div class="stat-label">Skipped</div>
+    <div class="stat-value">{{ skipped }}</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Total</div>
+    <div class="stat-value">{{ taken + skipped }}</div>
+  </div>
+</section>
+
+<table class="data">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Symbol</th>
+      <th>Direction</th>
+      <th>Strength</th>
+      <th>Strategy</th>
+      <th>Result</th>
+      <th>Reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in signals %}
+    <tr>
+      <td class="mono small">{{ s.timestamp }}</td>
+      <td><strong>{{ s.symbol }}</strong></td>
+      <td class="{{ 'buy' if s.direction == 'BUY' else ('sell' if s.direction == 'SELL' else '') }}">
+        {{ s.direction or "—" }}
+      </td>
+      <td>{% if s.strength %}{{ "%.2f" | format(s.strength) }}{% else %}—{% endif %}</td>
+      <td class="small">{{ s.strategy or "—" }}</td>
+      <td>
+        {% if s.action == 'taken' %}
+          <span class="badge badge-win">TAKEN</span>
+        {% else %}
+          <span class="badge badge-neutral">SKIPPED</span>
+        {% endif %}
+      </td>
+      <td class="small">{{ s.reason or "—" }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="empty">No signals yet. Bot is watching.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p class="hint">Auto-refreshes every 30 seconds. Shows last 300 signals.</p>
+<script>setTimeout(() => location.reload(), 30000);</script>
+{% endblock %}

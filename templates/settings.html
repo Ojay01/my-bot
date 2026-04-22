@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<h1>Settings</h1>
+
+{% if saved %}
+<div class="alert alert-success">
+  <strong>Saved.</strong> The bot will restart within 60 seconds to apply your changes.
+</div>
+{% endif %}
+
+<form method="POST" class="settings-form">
+  {% for key, label, typ, hint in fields %}
+  <div class="field">
+    <label for="{{ key }}">
+      {{ label }}
+      <span class="hint">{{ hint }}</span>
+    </label>
+    {% if typ == 'bool' %}
+      <label class="switch">
+        <input type="checkbox" id="{{ key }}" name="{{ key }}" {% if current[key] %}checked{% endif %}>
+        <span class="slider"></span>
+      </label>
+    {% elif typ == 'int' %}
+      <input type="number" step="1" id="{{ key }}" name="{{ key }}" value="{{ current[key] }}">
+    {% elif typ == 'float' %}
+      <input type="number" step="0.01" id="{{ key }}" name="{{ key }}" value="{{ current[key] }}">
+    {% else %}
+      <input type="text" id="{{ key }}" name="{{ key }}" value="{{ current[key] }}">
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <div class="actions">
+    <button type="submit" class="btn btn-primary">Save &amp; Restart Bot</button>
+  </div>
+</form>
+
+<div class="warning">
+  <strong>Note:</strong> MT5 credentials and trading symbols are not editable here for safety.
+  Edit them directly in <code>config.py</code> if needed.
+</div>
+{% endblock %}

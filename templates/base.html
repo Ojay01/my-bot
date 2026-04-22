@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trading Bot — {% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<header>
+  <div class="brand">TRADING BOT</div>
+  <nav>
+    <a href="{{ url_for('trades') }}"   class="{% if request.endpoint == 'trades'   %}active{% endif %}">Trades</a>
+    <a href="{{ url_for('signals') }}"  class="{% if request.endpoint == 'signals'  %}active{% endif %}">Signals</a>
+    <a href="{{ url_for('settings') }}" class="{% if request.endpoint == 'settings' %}active{% endif %}">Settings</a>
+  </nav>
+</header>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<footer>
+  <span>Deriv MT5 &middot; Smart Money Strategy</span>
+</footer>
+
+</body>
+</html>

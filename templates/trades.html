@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Trades{% endblock %}
+
+{% block content %}
+<h1>Trades</h1>
+
+<section class="stats">
+  <div class="stat">
+    <div class="stat-label">Open</div>
+    <div class="stat-value">{{ open_count }}</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Closed</div>
+    <div class="stat-value">{{ closed_count }}</div>
+  </div>
+  <div class="stat stat-win">
+    <div class="stat-label">Won</div>
+    <div class="stat-value">{{ wins }}</div>
+  </div>
+  <div class="stat stat-loss">
+    <div class="stat-label">Lost</div>
+    <div class="stat-value">{{ losses }}</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Win rate</div>
+    <div class="stat-value">{{ "%.1f" | format(win_rate) }}%</div>
+  </div>
+  <div class="stat {% if total_profit >= 0 %}stat-win{% else %}stat-loss{% endif %}">
+    <div class="stat-label">Total P&amp;L</div>
+    <div class="stat-value">${{ "%+.2f" | format(total_profit) }}</div>
+  </div>
+</section>
+
+<table class="data">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Symbol</th>
+      <th>Type</th>
+      <th>Lot</th>
+      <th>Entry</th>
+      <th>SL</th>
+      <th>TP</th>
+      <th>Close</th>
+      <th>Status</th>
+      <th>P&amp;L</th>
+      <th>Strategy / Reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in trades %}
+    <tr>
+      <td class="mono">{{ t.open_time }}</td>
+      <td><strong>{{ t.symbol }}</strong></td>
+      <td class="{{ 'buy' if t.direction == 'BUY' else 'sell' }}">{{ t.direction }}</td>
+      <td>{{ t.lot }}</td>
+      <td>{{ "%.5f" | format(t.open_price or 0) }}</td>
+      <td>{{ "%.5f" | format(t.sl or 0) }}</td>
+      <td>{{ "%.5f" | format(t.tp or 0) }}</td>
+      <td>{% if t.close_price %}{{ "%.5f" | format(t.close_price) }}{% else %}—{% endif %}</td>
+      <td>
+        {% if t.status == 'open' %}
+          <span class="badge badge-open">RUNNING</span>
+        {% elif t.status == 'closed_tp' %}
+          <span class="badge badge-win">TP HIT</span>
+        {% elif t.status == 'closed_sl' %}
+          <span class="badge badge-loss">SL HIT</span>
+        {% elif t.status == 'closed_early' %}
+          <span class="badge badge-neutral">EARLY EXIT</span>
+        {% elif t.status == 'closed_profit_locked' %}
+          <span class="badge badge-win">PROFIT LOCKED</span>
+        {% else %}
+          <span class="badge">{{ t.status }}</span>
+        {% endif %}
+      </td>
+      <td class="{% if (t.profit or 0) > 0 %}buy{% elif (t.profit or 0) < 0 %}sell{% endif %}">
+        {% if t.profit is not none %}${{ "%+.2f" | format(t.profit) }}{% else %}—{% endif %}
+      </td>
+      <td class="small">
+        {{ t.strategy or "—" }}
+        {% if t.close_reason %}<br><em>{{ t.close_reason }}</em>{% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="11" class="empty">No trades yet. Bot is watching the market.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p class="hint">Auto-refreshes every 30 seconds.</p>
+<script>setTimeout(() => location.reload(), 30000);</script>
+{% endblock %}
