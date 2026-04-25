@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 import mt5_connector as mt5c
 import config
 
@@ -26,7 +26,7 @@ class RiskManager:
 
         # Trades that were open last time but not now = just closed
         closed_tickets = self._previously_open_tickets - current_tickets
-        now            = datetime.utcnow()
+        now            = datetime.now(timezone.utc)
 
         for ticket in closed_tickets:
             # We don't know the symbol of the closed one from current_positions,
@@ -45,7 +45,7 @@ class RiskManager:
         last_close = self._recent_closes.get(symbol)
         if not last_close:
             return False
-        elapsed = datetime.utcnow() - last_close
+        elapsed = datetime.now(timezone.utc) - last_close
         return elapsed < timedelta(minutes=config.SYMBOL_COOLDOWN_MINUTES)
 
     def cooldown_remaining(self, symbol: str) -> int:
@@ -53,7 +53,7 @@ class RiskManager:
         last_close = self._recent_closes.get(symbol)
         if not last_close:
             return 0
-        elapsed = datetime.utcnow() - last_close
+        elapsed = datetime.now(timezone.utc) - last_close
         remaining = timedelta(minutes=config.SYMBOL_COOLDOWN_MINUTES) - elapsed
         return max(0, int(remaining.total_seconds() / 60) + 1)
 

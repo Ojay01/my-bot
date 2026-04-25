@@ -8,7 +8,7 @@ Web UI: http://localhost:4000
 import os
 import time
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from threading import Thread
 
 import config
@@ -133,7 +133,7 @@ def run():
                 continue
 
             cycle += 1
-            now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+            now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
             logger.info(f"\n{'─'*60}\n  Cycle {cycle}  |  {now}")
 
             acc = mt5c.get_account_info()
@@ -185,12 +185,6 @@ def run():
                                          symbol in config.METAL_SYMBOLS)
                     if is_forex_or_metal and not risk.can_trade_forex_balance():
                         reason = f"need ${config.FOREX_MIN_BALANCE}+ balance (synthetics only)"
-                        logger.scan_skipped(symbol, reason)
-                        db.log_signal(symbol, "NONE", 0, "-", "skipped", reason)
-                        continue
-
-                    if not risk.spread_is_acceptable(symbol):
-                        reason = "spread too wide right now"
                         logger.scan_skipped(symbol, reason)
                         db.log_signal(symbol, "NONE", 0, "-", "skipped", reason)
                         continue

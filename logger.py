@@ -2,7 +2,7 @@ import csv
 import logging
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from colorama import Fore, Style, init
 
 if sys.platform == "win32":
@@ -86,7 +86,7 @@ def trade_opened(ticket: int, symbol: str, direction: str,
     _ensure_trade_file()
     with open(TRADE_FILE, "a", newline="", encoding="utf-8") as f:
         csv.writer(f).writerow([
-            datetime.utcnow().isoformat(), symbol, direction,
+            datetime.now(timezone.utc).isoformat(), symbol, direction,
             lot, price, sl, tp, ticket, strategy, "open",
         ])
 
@@ -120,17 +120,28 @@ def scan_skipped(symbol: str, reason: str):
 
 def account_snapshot(balance: float, equity: float, profit: float,
                      target: float):
-    pct    = (balance / target * 100) if target > 0 else 0
-    filled = int(30 * min(pct, 100) / 100)
-    bar    = Fore.GREEN + "#" * filled + Style.RESET_ALL + "-" * (30 - filled)
-
     profit_str = (Fore.GREEN if profit >= 0 else Fore.RED) + f"{profit:+.2f}" + Style.RESET_ALL
 
-    _log.info(
-        f"\n  Balance: ${balance:.2f}   Equity (incl open trades): ${equity:.2f}   "
-        f"Open trades P&L: ${profit_str}"
-        f"\n  Progress toward ${target:.0f} target: [{bar}] {pct:.1f}%\n"
-    )
+    header = (f"\n  Balance: ${balance:.2f}   Equity (incl open trades): ${equity:.2f}   "
+              f"Open trades P&L: ${profit_str}")
+
+    if target <= 0:
+        _log.info(header + "\n")
+        return
+
+    # Demo accounts often start at $10,000 — the $50 target is then meaningless
+    # so show something sensible instead of a 20,000% bar.
+    if balance >= target * 5:
+        _log.info(header +
+            f"\n  {Fore.CYAN}Target ${target:.0f} already exceeded "
+            f"(you have ${balance:.2f}){Style.RESET_ALL}\n")
+        return
+
+    pct     = balance / target * 100
+    filled  = int(30 * min(pct, 100) / 100)
+    bar     = Fore.GREEN + "#" * filled + Style.RESET_ALL + "-" * (30 - filled)
+    _log.info(header +
+        f"\n  Progress toward ${target:.0f} target: [{bar}] {min(pct, 100):.1f}%\n")
 
 
 # ── Trade management messages ────────────────────────────────

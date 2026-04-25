@@ -11,7 +11,7 @@ MT5_SERVER   = "Deriv-Demo"   # Server name shown in your MT5 app
 
 # ── RISK SETTINGS ────────────────────────────────────────────
 RISK_PERCENT     = 1.0   # % of balance risked per trade (1% recommended)
-DAILY_LOSS_LIMIT = 5.0   # Stop trading today if daily loss hits this %
+DAILY_LOSS_LIMIT = 10.0  # Stop trading today if daily loss hits this %
 PROFIT_TARGET_USD= 50.0  # Bot alerts when balance reaches this
 
 # Max open trades — more on demo for testing, fewer on live for safety
@@ -137,36 +137,41 @@ ACTIVE_SYMBOLS = [
     "XAGUSD",   # Silver
 
     # --- Volatility Indices (Deriv — trade 24/7) ---
+    # Lower numbers = calmer price action.  High-vol ones commented out
+    # to reduce balance swings on a small account.
     "Volatility 10 Index",
     "Volatility 25 Index",
     "Volatility 50 Index",
-    "Volatility 75 Index",
-    "Volatility 100 Index",
-    "Volatility 10 (1s) Index",
-    "Volatility 25 (1s) Index",
-    "Volatility 50 (1s) Index",
-    "Volatility 75 (1s) Index",
-    "Volatility 100 (1s) Index",
+    # "Volatility 75 Index",            # high volatility — disabled
+    # "Volatility 100 Index",           # very high volatility — disabled
+    # "Volatility 10 (1s) Index",       # 1-second tick = very fast — disabled
+    # "Volatility 25 (1s) Index",       # 1-second tick = very fast — disabled
+    # "Volatility 50 (1s) Index",       # 1-second tick = very fast — disabled
+    # "Volatility 75 (1s) Index",       # 1-second tick = very fast — disabled
+    # "Volatility 100 (1s) Index",      # 1-second tick = very fast — disabled
 
     # --- Boom & Crash Indices (Deriv — spike reversal strategy) ---
+    # Tuned from real results: Boom 1000 (+$630) and Boom 500 (+$102)
+    # are profitable; Crash 1000 (-$307) and Crash 500 (-$80) are not.
     "Boom 1000 Index",
-    "Boom 500 Index",
-    "Boom 300 Index",
-    "Crash 1000 Index",
-    "Crash 500 Index",
-    "Crash 300 Index",
+    "Boom 500 Index",                   # 67% wins, +$102 in testing
+    # "Boom 300 Index",                 # spikes very often — disabled
+    # "Crash 1000 Index",               # losing strategy (-$307) — disabled
+    # "Crash 500 Index",                # losing strategy (-$80)  — disabled
+    # "Crash 300 Index",                # spikes very often — disabled
 
     # --- Jump Indices (Deriv — sudden jumps both directions) ---
-    "Jump 10 Index",
-    "Jump 25 Index",
-    "Jump 50 Index",
-    "Jump 75 Index",
-    "Jump 100 Index",
+    # Disabled entirely — jumps are unpredictable on a small account.
+    # "Jump 10 Index",
+    # "Jump 25 Index",
+    # "Jump 50 Index",
+    # "Jump 75 Index",
+    # "Jump 100 Index",
 
     # --- Step & Range Break Indices (Deriv) ---
-    "Step Index",
-    "Range Break 100 Index",
-    "Range Break 200 Index",
+    "Step Index",                       # very calm — smallest tick moves
+    "Range Break 100 Index",            # range-bound = lower volatility
+    # "Range Break 200 Index",          # bigger ranges — disabled
 ]
 
 # ── SYMBOL CATEGORIES (do not edit) ──────────────────────────
