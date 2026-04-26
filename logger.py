@@ -156,6 +156,12 @@ def tm_profit_locked(symbol: str):
         f"  Closed {symbol} in PROFIT — momentum reversing, keeping the win")
 
 
+def tm_peak_lock(symbol: str, peak: float, current: float, pct: float):
+    _log.info(Fore.GREEN +
+        f"  Closed {symbol} — profit gave back {pct:.0f}% from peak "
+        f"(peak ${peak:+.2f} -> now ${current:+.2f}). Locking in the rest.")
+
+
 def tm_breakeven(symbol: str):
     _log.info(Fore.CYAN +
         f"  {symbol}: Stop loss moved to entry price — trade can no longer lose money")

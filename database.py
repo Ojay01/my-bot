@@ -50,8 +50,29 @@ CREATE TABLE IF NOT EXISTS control (
     value TEXT
 );
 
-CREATE INDEX IF NOT EXISTS idx_signals_time ON signals(timestamp);
-CREATE INDEX IF NOT EXISTS idx_trades_status ON trades(status);
+-- Per-trade peak profit (survives bot restarts so the drawdown lock
+-- still knows the historical high)
+CREATE TABLE IF NOT EXISTS trade_peaks (
+    ticket  INTEGER PRIMARY KEY,
+    peak    REAL    NOT NULL,
+    updated TEXT    DEFAULT (datetime('now'))
+);
+
+-- Per-second snapshots of each open trade's profit / peak / current price.
+-- Auto-pruned by retention setting.
+CREATE TABLE IF NOT EXISTS trade_snapshots (
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticket    INTEGER NOT NULL,
+    ts        TEXT    DEFAULT (datetime('now')),
+    profit    REAL,
+    peak      REAL,
+    price     REAL
+);
+
+CREATE INDEX IF NOT EXISTS idx_signals_time   ON signals(timestamp);
+CREATE INDEX IF NOT EXISTS idx_trades_status  ON trades(status);
+CREATE INDEX IF NOT EXISTS idx_snap_ticket_ts ON trade_snapshots(ticket, ts);
+CREATE INDEX IF NOT EXISTS idx_snap_ts        ON trade_snapshots(ts);
 """
 
 
@@ -179,6 +200,67 @@ def get_open_trades() -> list[dict]:
     with _conn() as c:
         rows = c.execute("SELECT * FROM trades WHERE status = 'open' ORDER BY id DESC").fetchall()
     return [dict(r) for r in rows]
+
+
+# ── Peak tracking & snapshots ─────────────────────────────────
+
+def get_all_peaks() -> dict:
+    """Returns {ticket: peak_profit} for every recorded trade."""
+    with _conn() as c:
+        rows = c.execute("SELECT ticket, peak FROM trade_peaks").fetchall()
+    return {int(r["ticket"]): float(r["peak"]) for r in rows}
+
+
+def save_peak(ticket: int, peak: float):
+    with _conn() as c:
+        c.execute("""INSERT INTO trade_peaks (ticket, peak, updated)
+                     VALUES (?, ?, datetime('now'))
+                     ON CONFLICT(ticket) DO UPDATE SET
+                       peak = excluded.peak,
+                       updated = excluded.updated""",
+                  (ticket, peak))
+
+
+def delete_peak(ticket: int):
+    with _conn() as c:
+        c.execute("DELETE FROM trade_peaks WHERE ticket = ?", (ticket,))
+
+
+def save_snapshots_batch(rows: list):
+    """rows = list of (ticket, profit, peak, price). Single transaction."""
+    if not rows:
+        return
+    with _conn() as c:
+        c.executemany(
+            "INSERT INTO trade_snapshots (ticket, profit, peak, price) VALUES (?, ?, ?, ?)",
+            rows,
+        )
+
+
+def get_trade_snapshots(ticket: int, limit: int = 5000) -> list[dict]:
+    with _conn() as c:
+        rows = c.execute(
+            "SELECT ts, profit, peak, price FROM trade_snapshots "
+            "WHERE ticket = ? ORDER BY id ASC LIMIT ?",
+            (ticket, limit),
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def get_trade_by_ticket(ticket: int) -> dict | None:
+    with _conn() as c:
+        row = c.execute("SELECT * FROM trades WHERE ticket = ?", (ticket,)).fetchone()
+    return dict(row) if row else None
+
+
+def prune_snapshots(retention_hours: int):
+    """Delete snapshots older than the retention window."""
+    with _conn() as c:
+        c.execute(
+            "DELETE FROM trade_snapshots "
+            "WHERE ts < datetime('now', ?)",
+            (f"-{int(retention_hours)} hours",),
+        )
 
 
 # ── Control flags ─────────────────────────────────────────────

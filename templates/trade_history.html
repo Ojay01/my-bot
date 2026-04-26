@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Trade #{{ ticket }}{% endblock %}
+
+{% block content %}
+<h1>Trade #{{ ticket }}{% if trade %} — {{ trade.symbol }} {{ trade.direction }}{% endif %}</h1>
+
+<p><a href="{{ url_for('trades') }}">&larr; Back to all trades</a></p>
+
+{% if trade %}
+<section class="stats">
+  <div class="stat">
+    <div class="stat-label">Symbol</div>
+    <div class="stat-value">{{ trade.symbol }}</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Direction</div>
+    <div class="stat-value">{{ trade.direction }}</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Lot</div>
+    <div class="stat-value">{{ trade.lot }}</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Status</div>
+    <div class="stat-value">{{ trade.status }}</div>
+  </div>
+  <div class="stat stat-win">
+    <div class="stat-label">Highest peak</div>
+    <div class="stat-value">${{ "%+.2f" | format(final_peak) }}</div>
+  </div>
+  {% if trade.profit is not none %}
+  <div class="stat {% if trade.profit >= 0 %}stat-win{% else %}stat-loss{% endif %}">
+    <div class="stat-label">Final P&amp;L</div>
+    <div class="stat-value">${{ "%+.2f" | format(trade.profit) }}</div>
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if chart %}
+<h2>Profit over time</h2>
+<svg viewBox="0 0 {{ chart.w }} {{ chart.h }}"
+     style="width:100%; max-width:{{ chart.w }}px; background:#0f1115; border:1px solid #2a2e36; border-radius:6px;">
+  <!-- Zero line -->
+  <line x1="30" y1="{{ chart.zero_y }}" x2="{{ chart.w - 30 }}" y2="{{ chart.zero_y }}"
+        stroke="#555" stroke-dasharray="3,3" />
+  <!-- Peak line (gold) -->
+  <polyline points="{{ chart.peak_pts }}"
+            fill="none" stroke="#f5c542" stroke-width="1.5" opacity="0.7" />
+  <!-- Profit line (blue) -->
+  <polyline points="{{ chart.profit_pts }}"
+            fill="none" stroke="#4aa3ff" stroke-width="2" />
+  <!-- Y axis labels -->
+  <text x="6" y="35" fill="#aaa" font-size="11" font-family="monospace">${{ "%+.2f" | format(chart.hi) }}</text>
+  <text x="6" y="{{ chart.h - 14 }}" fill="#aaa" font-size="11" font-family="monospace">${{ "%+.2f" | format(chart.lo) }}</text>
+</svg>
+<p class="hint">
+  <span style="color:#4aa3ff;">━</span> live profit
+  &nbsp;&nbsp;
+  <span style="color:#f5c542;">━</span> running peak
+</p>
+{% else %}
+<p class="hint">No snapshots yet for this trade.</p>
+{% endif %}
+
+<h2>Snapshots ({{ snaps | length }})</h2>
+<table class="data">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Profit</th>
+      <th>Peak</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in snaps | reverse %}
+    <tr>
+      <td class="mono">{{ s.ts }}</td>
+      <td class="{% if (s.profit or 0) > 0 %}buy{% elif (s.profit or 0) < 0 %}sell{% endif %}">
+        ${{ "%+.2f" | format(s.profit or 0) }}
+      </td>
+      <td>${{ "%+.2f" | format(s.peak or 0) }}</td>
+      <td class="mono">{% if s.price %}{{ "%.5f" | format(s.price) }}{% else %}—{% endif %}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="empty">No snapshots recorded yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

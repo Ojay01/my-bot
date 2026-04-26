@@ -53,6 +53,23 @@ TP_EXTENSION_ENABLED = True
 # all the way back to SL.
 PROFIT_PROTECTION_ENABLED = True
 
+# Peak drawdown lock: track the highest profit each trade reaches.
+# If profit drops by PEAK_DRAWDOWN_PERCENT from that peak, close the
+# trade immediately — no need to hit SL.  Catches the case where price
+# runs up nicely (say +$500) then reverses without warning.
+# Only kicks in once profit has reached PEAK_DRAWDOWN_MIN_PROFIT_USD,
+# so tiny $0.20 swings don't trigger it.
+PEAK_DRAWDOWN_PROTECTION_ENABLED = True
+PEAK_DRAWDOWN_PERCENT            = 25.0   # close when profit falls this % from its peak
+PEAK_DRAWDOWN_MIN_PROFIT_USD     = 1.0    # don't track until peak reaches at least this much
+
+# Per-second profit history: the fast guard saves a snapshot of every open
+# trade's profit/peak/price each second so you can review the curve later
+# from the web UI (Trades page → click a symbol).  Old snapshots are
+# auto-pruned to keep the DB small.
+TRADE_HISTORY_ENABLED          = True
+TRADE_HISTORY_RETENTION_HOURS  = 168     # 7 days — older snapshots are deleted
+
 # ── CAPITAL PROTECTION ───────────────────────────────────────
 # Hard floor — if balance drops to this, stop ALL trading immediately
 # For a $10 account this prevents total wipeout
@@ -66,7 +83,7 @@ FOREX_MIN_BALANCE = 50.0  # USD — only trade Forex/Metals above this balance
 # ── SESSION FILTER (Forex & Metals only) ─────────────────────
 # Synthetics trade 24/7 and ignore this filter
 # All times are UTC
-SESSION_FILTER_ENABLED = True
+SESSION_FILTER_ENABLED = False   # 24/7 — forex/metals trade in all hours
 
 LONDON_START  = 7    # 07:00 UTC
 LONDON_END    = 16   # 16:00 UTC
@@ -215,6 +232,14 @@ LOOKBACK_CANDLES = 300
 SCAN_INTERVAL_SECONDS = 60
 MAGIC_NUMBER          = 20240101
 TRADE_COMMENT         = "TradingBot_v1"
+
+# Master switch: when False, bot still scans markets and logs signals
+# but will NOT open any new trades.  Existing open trades continue to
+# be managed (peak-drawdown lock, breakeven, trailing SL, profit
+# protection, early exit) so positions don't go unwatched.
+# Live setting — toggling from the web UI takes effect instantly,
+# no restart required.
+TRADING_ENABLED = True
 
 # ── WEB UI ───────────────────────────────────────────────────
 WEB_UI_ENABLED = True

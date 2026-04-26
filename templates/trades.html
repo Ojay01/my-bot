@@ -31,6 +31,25 @@
   </div>
 </section>
 
+<section class="stats" id="live-bar" style="display:none;">
+  <div class="stat">
+    <div class="stat-label">Balance</div>
+    <div class="stat-value" id="live-balance">—</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Equity (live)</div>
+    <div class="stat-value" id="live-equity">—</div>
+  </div>
+  <div class="stat" id="live-float-stat">
+    <div class="stat-label">Floating P&amp;L (live)</div>
+    <div class="stat-value" id="live-floating">—</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Live updates</div>
+    <div class="stat-value" id="live-tick" style="font-size:0.9em;">connecting…</div>
+  </div>
+</section>
+
 <table class="data">
   <thead>
     <tr>
@@ -49,15 +68,21 @@
   </thead>
   <tbody>
     {% for t in trades %}
-    <tr>
+    <tr {% if t.status == 'open' %}data-ticket="{{ t.ticket }}" class="open-row"{% endif %}>
       <td class="mono">{{ t.open_time }}</td>
-      <td><strong>{{ t.symbol }}</strong></td>
+      <td>
+        {% if t.ticket %}
+          <a href="{{ url_for('trade_history', ticket=t.ticket) }}" title="View profit history"><strong>{{ t.symbol }}</strong></a>
+        {% else %}
+          <strong>{{ t.symbol }}</strong>
+        {% endif %}
+      </td>
       <td class="{{ 'buy' if t.direction == 'BUY' else 'sell' }}">{{ t.direction }}</td>
       <td>{{ t.lot }}</td>
       <td>{{ "%.5f" | format(t.open_price or 0) }}</td>
-      <td>{{ "%.5f" | format(t.sl or 0) }}</td>
-      <td>{{ "%.5f" | format(t.tp or 0) }}</td>
-      <td>{% if t.close_price %}{{ "%.5f" | format(t.close_price) }}{% else %}—{% endif %}</td>
+      <td class="sl-cell">{{ "%.5f" | format(t.sl or 0) }}</td>
+      <td class="tp-cell">{{ "%.5f" | format(t.tp or 0) }}</td>
+      <td class="close-cell">{% if t.close_price %}{{ "%.5f" | format(t.close_price) }}{% elif t.status == 'open' %}<span class="mono">live</span>{% else %}—{% endif %}</td>
       <td>
         {% if t.status == 'open' %}
           <span class="badge badge-open">RUNNING</span>
@@ -73,7 +98,7 @@
           <span class="badge">{{ t.status }}</span>
         {% endif %}
       </td>
-      <td class="{% if (t.profit or 0) > 0 %}buy{% elif (t.profit or 0) < 0 %}sell{% endif %}">
+      <td class="pnl-cell {% if (t.profit or 0) > 0 %}buy{% elif (t.profit or 0) < 0 %}sell{% endif %}">
         {% if t.profit is not none %}${{ "%+.2f" | format(t.profit) }}{% else %}—{% endif %}
       </td>
       <td class="small">
@@ -87,6 +112,91 @@
   </tbody>
 </table>
 
-<p class="hint">Auto-refreshes every 30 seconds.</p>
-<script>setTimeout(() => location.reload(), 30000);</script>
+<p class="hint">Open trades update live every second. Page reloads when a trade opens or closes.</p>
+<script>
+(function () {
+  // Tickets currently shown as open on this rendered page.
+  // If the live feed reports a different set, reload to pick up the new/closed trade.
+  const initialOpenTickets = new Set(
+    Array.from(document.querySelectorAll("tr.open-row"))
+         .map(tr => String(tr.dataset.ticket))
+  );
+
+  const liveBar  = document.getElementById("live-bar");
+  const elBal    = document.getElementById("live-balance");
+  const elEq     = document.getElementById("live-equity");
+  const elFloat  = document.getElementById("live-floating");
+  const elFloatStat = document.getElementById("live-float-stat");
+  const elTick   = document.getElementById("live-tick");
+
+  function fmtMoney(n) {
+    if (n === null || n === undefined) return "—";
+    const sign = n >= 0 ? "+" : "";
+    return "$" + sign + n.toFixed(2);
+  }
+
+  async function tick() {
+    try {
+      const res  = await fetch("/api/live", { cache: "no-store" });
+      const data = await res.json();
+      if (!data.ok) {
+        elTick.textContent = "waiting for MT5…";
+        return;
+      }
+
+      // Live banner — show whenever there are open trades
+      if (data.open_count > 0) {
+        liveBar.style.display = "";
+        elBal.textContent   = fmtMoney(data.balance);
+        elEq.textContent    = fmtMoney(data.equity);
+        elFloat.textContent = fmtMoney(data.floating);
+        elFloatStat.classList.toggle("stat-win",  (data.floating || 0) > 0);
+        elFloatStat.classList.toggle("stat-loss", (data.floating || 0) < 0);
+      } else {
+        liveBar.style.display = "none";
+      }
+
+      const now = new Date();
+      elTick.textContent = now.toLocaleTimeString();
+
+      // Update each open row in place
+      const liveTickets = new Set();
+      for (const p of data.positions) {
+        liveTickets.add(String(p.ticket));
+        const row = document.querySelector('tr.open-row[data-ticket="' + p.ticket + '"]');
+        if (!row) continue;
+
+        const pnlCell   = row.querySelector(".pnl-cell");
+        const closeCell = row.querySelector(".close-cell");
+        const slCell    = row.querySelector(".sl-cell");
+        const tpCell    = row.querySelector(".tp-cell");
+
+        if (pnlCell) {
+          pnlCell.textContent = fmtMoney(p.profit);
+          pnlCell.classList.toggle("buy",  (p.profit || 0) > 0);
+          pnlCell.classList.toggle("sell", (p.profit || 0) < 0);
+        }
+        if (closeCell && p.current !== null && p.current !== undefined) {
+          closeCell.innerHTML = '<span class="mono">' + p.current.toFixed(5) + '</span>';
+        }
+        if (slCell) slCell.textContent = (p.sl || 0).toFixed(5);
+        if (tpCell) tpCell.textContent = (p.tp || 0).toFixed(5);
+      }
+
+      // If the set of open tickets changed (trade opened or closed), reload
+      // so closed trades pick up their final price/profit and new ones appear.
+      const sameSize = liveTickets.size === initialOpenTickets.size;
+      const sameSet  = sameSize && [...liveTickets].every(t => initialOpenTickets.has(t));
+      if (!sameSet) {
+        location.reload();
+      }
+    } catch (e) {
+      elTick.textContent = "offline";
+    }
+  }
+
+  tick();                       // first call right away
+  setInterval(tick, 1000);      // every second after that
+})();
+</script>
 {% endblock %}

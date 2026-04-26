@@ -21,9 +21,13 @@ On every bot cycle, for every open trade, this module:
      money on the table when a move has legs.  Only extends once per trade.
 """
 
+import threading
+import time
+
 import mt5_connector as mt5c
 import trade_manager as tm
 import indicators   as ind
+import database     as db
 import logger
 import config
 
@@ -34,6 +38,9 @@ class TradeMonitor:
         # Needed because after break-even moves, we lose the original 1R distance
         self._original_sl:  dict[int, float] = {}
         self._tp_extended:  set[int]         = set()
+        # Highest USD profit each ticket has reached (for peak-drawdown lock)
+        self._peak_profit:  dict[int, float] = {}
+        self._fast_guard_started = False
 
     # ── Bookkeeping ───────────────────────────────────────────
 
@@ -43,6 +50,21 @@ class TradeMonitor:
     def forget_trade(self, ticket: int):
         self._original_sl.pop(ticket, None)
         self._tp_extended.discard(ticket)
+        self._peak_profit.pop(ticket, None)
+        try:
+            db.delete_peak(ticket)
+        except Exception:
+            pass
+
+    def load_peaks_from_db(self):
+        """Restore peak-profit memory from the DB so the drawdown lock
+        still knows each open trade's historical high after a restart."""
+        try:
+            self._peak_profit.update(db.get_all_peaks())
+            if self._peak_profit:
+                logger.info(f"  Restored peaks for {len(self._peak_profit)} trade(s) from DB")
+        except Exception as e:
+            logger.error(f"Could not load peaks from DB: {e}")
 
     def cleanup_closed_trades(self, live_tickets: set[int]):
         """Remove any bookkeeping for tickets that no longer exist."""
@@ -68,6 +90,10 @@ class TradeMonitor:
                 logger.tm_profit_locked(position["symbol"])
                 self.forget_trade(ticket)
                 return
+
+        # 2b. Peak drawdown lock is handled by the fast guard thread
+        #     (start_fast_guard) which polls every second for instant reaction.
+        #     Doing it here too would race with the guard.
 
         # 3. SL management (breakeven + trailing)
         self._apply_sl_management(position)
@@ -201,6 +227,107 @@ class TradeMonitor:
                 signals += 1
 
         return signals >= 2   # need 2+ reversal signs to close
+
+    # ── Peak drawdown lock + fast guard thread ────────────────
+
+    def start_fast_guard(self, interval_sec: float = 1.0):
+        """
+        Spawn a daemon thread that polls open positions every `interval_sec`
+        seconds and runs ONLY the peak-drawdown check.  Lets us react to
+        profit giveback in ~1 second without rerunning the heavy market
+        scan / structure-break checks (which stay on the 60s main cycle).
+        """
+        if self._fast_guard_started:
+            return
+        self._fast_guard_started = True
+        t = threading.Thread(
+            target=self._fast_guard_loop,
+            args=(interval_sec,),
+            daemon=True,
+            name="peak-drawdown-guard",
+        )
+        t.start()
+        logger.info(f"  Peak-drawdown guard running every {interval_sec:g}s")
+
+    def _fast_guard_loop(self, interval_sec: float):
+        prune_every = max(60, int(3600 / interval_sec))   # prune ~hourly
+        ticks_since_prune = 0
+
+        while True:
+            try:
+                positions = mt5c.get_open_positions()
+
+                # 1. Peak drawdown check (closes trades if triggered)
+                if getattr(config, "PEAK_DRAWDOWN_PROTECTION_ENABLED", False):
+                    for p in positions:
+                        self._check_peak_drawdown(p)
+
+                # 2. History snapshots — one row per open trade per tick
+                if getattr(config, "TRADE_HISTORY_ENABLED", True):
+                    snap_rows = []
+                    for p in positions:
+                        ticket = p["ticket"]
+                        if ticket not in self._peak_profit:
+                            continue   # was just closed by the check above
+                        sym = mt5c.get_symbol_info(p["symbol"])
+                        price = (sym["bid"] if p["type"] == "BUY" else sym["ask"]) if sym else None
+                        snap_rows.append((
+                            ticket, p["profit"], self._peak_profit.get(ticket, 0.0), price
+                        ))
+                    db.save_snapshots_batch(snap_rows)
+
+                # 3. Periodic prune of old snapshots
+                ticks_since_prune += 1
+                if ticks_since_prune >= prune_every:
+                    ticks_since_prune = 0
+                    hrs = int(getattr(config, "TRADE_HISTORY_RETENTION_HOURS", 168))
+                    db.prune_snapshots(hrs)
+
+            except Exception as e:
+                # Don't let a transient error kill the guard
+                logger.error(f"Peak-drawdown guard error: {e}")
+            time.sleep(interval_sec)
+
+    def _check_peak_drawdown(self, position: dict) -> bool:
+        """
+        Track each trade's all-time-high USD profit.  If current profit
+        drops by PEAK_DRAWDOWN_PERCENT from that peak, close the trade
+        immediately to lock in what's left.  Only starts tracking once
+        the peak has cleared PEAK_DRAWDOWN_MIN_PROFIT_USD so trivial
+        sub-dollar swings don't trigger it.
+
+        Returns True if the trade was closed (caller should stop
+        managing this position for the rest of the cycle).
+        """
+        ticket  = position["ticket"]
+        profit  = position["profit"]
+        min_pk  = getattr(config, "PEAK_DRAWDOWN_MIN_PROFIT_USD", 1.0)
+        pct     = getattr(config, "PEAK_DRAWDOWN_PERCENT", 25.0)
+
+        # Update the running peak for this ticket
+        prev_peak = self._peak_profit.get(ticket, 0.0)
+        if profit > prev_peak:
+            self._peak_profit[ticket] = profit
+            try:
+                db.save_peak(ticket, profit)   # persist so it survives restart
+            except Exception:
+                pass
+            return False   # new high — nothing to do
+
+        peak = self._peak_profit.get(ticket, 0.0)
+
+        # Don't act until peak has cleared the minimum threshold
+        if peak < min_pk:
+            return False
+
+        # Trigger: current profit has fallen this far from peak
+        trigger = peak * (1.0 - pct / 100.0)
+        if profit <= trigger:
+            if tm.close_trade(ticket):
+                logger.tm_peak_lock(position["symbol"], peak, profit, pct)
+                self.forget_trade(ticket)
+                return True
+        return False
 
     # ── SL management: breakeven + trailing ───────────────────
 

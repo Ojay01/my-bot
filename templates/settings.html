@@ -4,9 +4,13 @@
 {% block content %}
 <h1>Settings</h1>
 
-{% if saved %}
+{% if saved == "live" %}
 <div class="alert alert-success">
-  <strong>Saved.</strong> The bot will restart within 60 seconds to apply your changes.
+  <strong>Saved.</strong> Live setting — takes effect on the next signal. No restart needed.
+</div>
+{% elif saved == "restart" %}
+<div class="alert alert-success">
+  <strong>Saved.</strong> The bot will auto-restart within 60 seconds to apply your changes.
 </div>
 {% endif %}
 

@@ -59,6 +59,14 @@ def _sync_trade_state(previously_open: set[int]) -> set[int]:
     return current_tickets
 
 
+def is_trading_enabled() -> bool:
+    """Live-read so the web-UI toggle takes effect immediately, no restart."""
+    val = db.get_setting("TRADING_ENABLED", None)
+    if val is None:
+        return getattr(config, "TRADING_ENABLED", True)
+    return bool(val)
+
+
 def manage_open_trades(monitor: TradeMonitor):
     positions = mt5c.get_open_positions()
     live_tickets = {p["ticket"] for p in positions}
@@ -114,6 +122,8 @@ def run():
     risk    = RiskManager()
     engine  = SignalEngine()
     monitor = TradeMonitor()
+    monitor.load_peaks_from_db()                 # restore peaks across restart
+    monitor.start_fast_guard(interval_sec=1.0)   # 1-second peak-drawdown check
 
     previously_open: set[int] = {p["ticket"] for p in mt5c.get_open_positions()}
     cycle = 0
@@ -199,6 +209,15 @@ def run():
                         symbol, signal.direction,
                         signal.strength, signal.strategy
                     )
+
+                    # Master kill switch — paused via web UI.
+                    # Signal is still logged so you can see what would have been taken.
+                    if not is_trading_enabled():
+                        reason = "trading paused (web UI toggle)"
+                        logger.scan_skipped(symbol, reason)
+                        db.log_signal(symbol, signal.direction, signal.strength,
+                                       signal.strategy, "skipped", reason)
+                        continue
 
                     positions = mt5c.get_open_positions()
                     if len(positions) >= config.MAX_OPEN_TRADES:
