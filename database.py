@@ -90,6 +90,11 @@ def _conn():
 def init_db():
     with _conn() as c:
         c.executescript(SCHEMA)
+        # Add peak_profit column to existing DBs (no-op if it already exists)
+        try:
+            c.execute("ALTER TABLE trades ADD COLUMN peak_profit REAL")
+        except sqlite3.OperationalError:
+            pass
 
 
 # ── Settings ──────────────────────────────────────────────────
@@ -172,13 +177,23 @@ def log_trade_open(ticket: int, symbol: str, direction: str, lot: float,
 
 
 def log_trade_close(ticket: int, close_price: float, profit: float,
-                    status: str, reason: str = ""):
+                    status: str, reason: str = "", peak_profit: float = None):
+    """If peak_profit is None, the existing peak in the row is preserved
+    (so a later refining call won't wipe out a peak set by an earlier one)."""
     with _conn() as c:
-        c.execute("""UPDATE trades
-                     SET close_time = datetime('now'),
-                         close_price = ?, profit = ?, status = ?, close_reason = ?
-                     WHERE ticket = ?""",
-                  (close_price, profit, status, reason, ticket))
+        if peak_profit is not None:
+            c.execute("""UPDATE trades
+                         SET close_time   = COALESCE(close_time, datetime('now')),
+                             close_price  = ?, profit = ?, status = ?,
+                             close_reason = ?, peak_profit = ?
+                         WHERE ticket = ?""",
+                      (close_price, profit, status, reason, peak_profit, ticket))
+        else:
+            c.execute("""UPDATE trades
+                         SET close_time   = COALESCE(close_time, datetime('now')),
+                             close_price  = ?, profit = ?, status = ?, close_reason = ?
+                         WHERE ticket = ?""",
+                      (close_price, profit, status, reason, ticket))
 
 
 def update_trade_sl_tp(ticket: int, sl: float = None, tp: float = None):

@@ -100,6 +100,9 @@
       </td>
       <td class="pnl-cell {% if (t.profit or 0) > 0 %}buy{% elif (t.profit or 0) < 0 %}sell{% endif %}">
         {% if t.profit is not none %}${{ "%+.2f" | format(t.profit) }}{% else %}—{% endif %}
+        {% if t.peak_profit is not none and t.peak_profit > 0 and t.peak_profit > (t.profit or 0) + 0.5 %}
+          <br><span class="small" style="color:#f5c542;">peaked +${{ "%.2f" | format(t.peak_profit) }}</span>
+        {% endif %}
       </td>
       <td class="small">
         {{ t.strategy or "—" }}

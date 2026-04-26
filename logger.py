@@ -162,6 +162,24 @@ def tm_peak_lock(symbol: str, peak: float, current: float, pct: float):
         f"(peak ${peak:+.2f} -> now ${current:+.2f}). Locking in the rest.")
 
 
+def tm_breakeven_lock(symbol: str, peak: float, current: float):
+    _log.warning(Fore.YELLOW +
+        f"  BREAKEVEN LOCK — {symbol} peaked at ${peak:+.2f} and dropped to "
+        f"${current:+.2f}. Force-closing before it goes negative.")
+
+
+def tm_close_failed(symbol: str, ticket: int, attempt: int, code):
+    _log.error(Fore.RED +
+        f"  Close attempt {attempt} FAILED for {symbol} ticket {ticket} "
+        f"(broker code {code}). Will retry...")
+
+
+def tm_close_gave_up(symbol: str, ticket: int, reason: str):
+    _log.error(Fore.RED + Style.BRIGHT +
+        f"  ‼  Could not close {symbol} ticket {ticket} after retries ({reason}). "
+        f"Position still open — check MT5 manually.")
+
+
 def tm_breakeven(symbol: str):
     _log.info(Fore.CYAN +
         f"  {symbol}: Stop loss moved to entry price — trade can no longer lose money")

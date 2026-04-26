@@ -63,6 +63,15 @@ PEAK_DRAWDOWN_PROTECTION_ENABLED = True
 PEAK_DRAWDOWN_PERCENT            = 25.0   # close when profit falls this % from its peak
 PEAK_DRAWDOWN_MIN_PROFIT_USD     = 1.0    # don't track until peak reaches at least this much
 
+# Breakeven safety lock — the "no losses after profits" rule.
+# Once a trade's peak profit reaches BREAKEVEN_LOCK_AFTER_PROFIT_USD,
+# the bot will FORCE CLOSE it the moment profit falls to $0 or below.
+# This guarantees a profitable trade never closes at a loss, regardless
+# of where the broker's stop-loss is.  Last-resort safety net behind
+# the peak-drawdown lock.
+BREAKEVEN_LOCK_ENABLED          = True
+BREAKEVEN_LOCK_AFTER_PROFIT_USD = 1.0
+
 # Per-second profit history: the fast guard saves a snapshot of every open
 # trade's profit/peak/price each second so you can review the curve later
 # from the web UI (Trades page → click a symbol).  Old snapshots are
