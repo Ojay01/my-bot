@@ -300,6 +300,16 @@ def run():
                                        signal.strategy, "skipped", reason)
                         continue
 
+                    # Spread cost check — would the entry alone burn too much
+                    # of the account?  Catches wide-spread synthetics on small
+                    # balances where 1% planned risk hides a 10% spread cost.
+                    too_costly, why = risk.spread_cost_too_high(symbol, lot)
+                    if too_costly:
+                        logger.scan_skipped(symbol, why)
+                        db.log_signal(symbol, signal.direction, signal.strength,
+                                       signal.strategy, "skipped", why)
+                        continue
+
                     result = tm.open_trade(
                         symbol     = symbol,
                         direction  = signal.direction,

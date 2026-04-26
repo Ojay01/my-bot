@@ -107,6 +107,52 @@ class RiskManager:
         spread_pct      = (spread_in_price / mid_price) * 100
         return spread_pct <= config.MAX_SPREAD_PCT_SYNTHETIC
 
+    # ── Spread cost guard (dollar-based, account-size aware) ──
+
+    def spread_cost_too_high(self, symbol: str, lot: float) -> tuple[bool, str]:
+        """
+        Estimate the immediate unrealized loss caused by the bid-ask
+        spread when opening this trade.  Returns (True, reason) if the
+        cost would exceed MAX_SPREAD_COST_PERCENT of current balance.
+
+        Different from spread_is_acceptable() — that checks the *width*
+        of the spread; this checks the *dollar cost* against your balance,
+        which is what actually matters for small accounts.
+        """
+        if not getattr(config, "SPREAD_COST_GUARD_ENABLED", True):
+            return False, ""
+
+        sym  = mt5c.get_symbol_info(symbol)
+        info = mt5c.get_account_info()
+        if not sym or not info:
+            return False, ""   # can't evaluate — let other checks decide
+
+        balance = info["balance"]
+        if balance <= 0:
+            return True, "balance is zero"
+
+        spread_points = sym["spread"]
+        tick_size     = sym["trade_tick_size"]
+        tick_value    = sym["trade_tick_value"]
+        point         = sym["point"]
+
+        if tick_size <= 0 or tick_value <= 0 or spread_points <= 0:
+            return False, ""
+
+        # Spread cost in account currency = spread (in price) / tick_size × tick_value × lot
+        spread_in_price = spread_points * point
+        cost_per_lot    = (spread_in_price / tick_size) * tick_value
+        cost_usd        = cost_per_lot * lot
+
+        pct = (cost_usd / balance) * 100.0
+        cap = float(getattr(config, "MAX_SPREAD_COST_PERCENT", 2.0))
+
+        if pct > cap:
+            reason = (f"spread cost ${cost_usd:.2f} = {pct:.1f}% of "
+                      f"${balance:.2f} balance (cap {cap:.1f}%)")
+            return True, reason
+        return False, ""
+
     # ── Daily loss tracking ───────────────────────────────────
 
     def _refresh_daily_baseline(self):

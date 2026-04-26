@@ -119,6 +119,17 @@ MAX_SPREAD_PIPS = {
 # Synthetics don't use "pips" — use spread as % of price instead
 MAX_SPREAD_PCT_SYNTHETIC = 0.30   # 0.30% of price (generous)
 
+# ── SPREAD COST GUARD (account-size aware) ───────────────────
+# Different from SPREAD_FILTER above: this checks the actual DOLLAR cost
+# of opening a trade (spread × lot × tick value) against the account
+# balance.  Boom/Volatility synthetics can have entry spread costs that
+# exceed your planned 1% risk, silently wiping small accounts.
+# Default cap = 2% of balance.  On a $10k demo this rarely triggers;
+# on a $20 real account it correctly blocks wide-spread synthetics
+# until the account grows.
+SPREAD_COST_GUARD_ENABLED = True
+MAX_SPREAD_COST_PERCENT   = 2.0   # skip trade if entry spread cost > X% of balance
+
 # ── NEWS BLACKOUT ─────────────────────────────────────────────
 # Bot pauses Forex/Metals trading 30 min before and after major news
 # Update this list manually on Sunday before each trading week

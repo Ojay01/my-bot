@@ -36,6 +36,8 @@ EDITABLE_SETTINGS = [
     ("PEAK_DRAWDOWN_MIN_PROFIT_USD","Peak drawdown min profit ($)",   "float", "Only kicks in once profit reaches at least this"),
     ("BREAKEVEN_LOCK_ENABLED",      "Breakeven safety lock",          "bool",  "Once trade was in profit, never let it close at a loss"),
     ("BREAKEVEN_LOCK_AFTER_PROFIT_USD","Breakeven lock after ($)",    "float", "Lock kicks in once peak reaches this profit"),
+    ("SPREAD_COST_GUARD_ENABLED",   "Spread cost guard",              "bool",  "Skip trade if entry spread cost > X% of balance"),
+    ("MAX_SPREAD_COST_PERCENT",     "Max spread cost (%)",            "float", "Skip trade when spread × lot would cost more than this %"),
     ("TP_EXTENSION_ENABLED",        "TP extension enabled",           "bool",  "Extend TP on strong momentum"),
     ("TRAILING_STOP",               "Trailing stop enabled",          "bool",  "Move SL up as price moves"),
     ("SESSION_FILTER_ENABLED",      "Session filter (Forex only)",    "bool",  "Skip Forex outside London/NY hours"),
