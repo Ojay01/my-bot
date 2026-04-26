@@ -112,16 +112,9 @@
   </tbody>
 </table>
 
-<p class="hint">Open trades update live every second. Page reloads when a trade opens or closes.</p>
+<p class="hint">Open trades update live every second. Full page refreshes every 30 seconds.</p>
 <script>
 (function () {
-  // Tickets currently shown as open on this rendered page.
-  // If the live feed reports a different set, reload to pick up the new/closed trade.
-  const initialOpenTickets = new Set(
-    Array.from(document.querySelectorAll("tr.open-row"))
-         .map(tr => String(tr.dataset.ticket))
-  );
-
   const liveBar  = document.getElementById("live-bar");
   const elBal    = document.getElementById("live-balance");
   const elEq     = document.getElementById("live-equity");
@@ -133,6 +126,17 @@
     if (n === null || n === undefined) return "—";
     const sign = n >= 0 ? "+" : "";
     return "$" + sign + n.toFixed(2);
+  }
+
+  function markRowClosing(row) {
+    if (row.dataset.closingMarked === "1") return;
+    row.dataset.closingMarked = "1";
+    row.style.opacity = "0.55";
+    const badge = row.querySelector(".badge");
+    if (badge) {
+      badge.className = "badge";
+      badge.textContent = "CLOSING…";
+    }
   }
 
   async function tick() {
@@ -156,8 +160,7 @@
         liveBar.style.display = "none";
       }
 
-      const now = new Date();
-      elTick.textContent = now.toLocaleTimeString();
+      elTick.textContent = new Date().toLocaleTimeString();
 
       // Update each open row in place
       const liveTickets = new Set();
@@ -183,20 +186,22 @@
         if (tpCell) tpCell.textContent = (p.tp || 0).toFixed(5);
       }
 
-      // If the set of open tickets changed (trade opened or closed), reload
-      // so closed trades pick up their final price/profit and new ones appear.
-      const sameSize = liveTickets.size === initialOpenTickets.size;
-      const sameSet  = sameSize && [...liveTickets].every(t => initialOpenTickets.has(t));
-      if (!sameSet) {
-        location.reload();
-      }
+      // Any rows whose ticket no longer appears in the live feed = closed
+      // since this page rendered.  Don't reload now (UX rule: 30s only) —
+      // just gray them out so the user knows they're not really running.
+      document.querySelectorAll("tr.open-row").forEach(row => {
+        if (!liveTickets.has(String(row.dataset.ticket))) {
+          markRowClosing(row);
+        }
+      });
     } catch (e) {
       elTick.textContent = "offline";
     }
   }
 
   tick();                       // first call right away
-  setInterval(tick, 1000);      // every second after that
+  setInterval(tick, 1000);      // live updates every second
+  setTimeout(() => location.reload(), 30000);   // full page refresh every 30s
 })();
 </script>
 {% endblock %}

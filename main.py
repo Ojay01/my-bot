@@ -59,6 +59,53 @@ def _sync_trade_state(previously_open: set[int]) -> set[int]:
     return current_tickets
 
 
+def reconcile_open_trades():
+    """
+    On startup, find DB trades still marked 'open' whose tickets no longer
+    exist in MT5 (closed while bot was off, or manually closed in MT5),
+    and mark them closed using MT5's deal history.  Without this they
+    stay shown as RUNNING on the trades page forever.
+    """
+    import MetaTrader5 as mt5
+
+    db_open = db.get_open_trades()
+    if not db_open:
+        return
+
+    live_tickets = {p["ticket"] for p in mt5c.get_open_positions()}
+    orphaned = [t for t in db_open if t["ticket"] not in live_tickets]
+    if not orphaned:
+        return
+
+    logger.info(f"  Reconciling {len(orphaned)} orphaned 'open' trade(s) from DB ...")
+
+    for t in orphaned:
+        ticket = t["ticket"]
+        deals  = mt5.history_deals_get(ticket=ticket)
+
+        if not deals:
+            db.log_trade_close(ticket, 0, 0, "closed_unknown",
+                               "trade closed while bot was offline (no MT5 history)")
+            db.delete_peak(ticket)
+            logger.info(f"    Ticket {ticket} ({t['symbol']}) -> closed_unknown (no history)")
+            continue
+
+        last   = deals[-1]
+        profit = sum(d.profit for d in deals) + sum(d.swap for d in deals) + sum(d.commission for d in deals)
+
+        reason = last.comment or ""
+        status = "closed"
+        if "tp" in reason.lower() or "take profit" in reason.lower():
+            status = "closed_tp"
+        elif "sl" in reason.lower() or "stop loss" in reason.lower():
+            status = "closed_sl"
+
+        db.log_trade_close(ticket, last.price, profit, status,
+                           reason or "reconciled on bot startup")
+        db.delete_peak(ticket)
+        logger.info(f"    Ticket {ticket} ({t['symbol']}) -> {status}, P&L ${profit:+.2f}")
+
+
 def is_trading_enabled() -> bool:
     """Live-read so the web-UI toggle takes effect immediately, no restart."""
     val = db.get_setting("TRADING_ENABLED", None)
@@ -118,6 +165,9 @@ def run():
             f"Connected  |  Account: {config.MT5_LOGIN}  "
             f"Balance: ${acc['balance']:.2f}  Currency: {acc['currency']}"
         )
+
+    # Reconcile DB ↔ MT5: mark any trades closed externally / while bot was off
+    reconcile_open_trades()
 
     risk    = RiskManager()
     engine  = SignalEngine()
