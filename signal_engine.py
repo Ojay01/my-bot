@@ -33,6 +33,45 @@ class SignalEngine:
         self._rsibb  = RsiBollingerStrategy()
         self._bc     = BoomCrashStrategy()
 
+    # ── Whitelist + confirmation helpers ──────────────────────
+
+    def _is_allowed(self, strategy: str, symbol: str) -> bool:
+        """Strategy-symbol whitelist gate. Drop signal if the strategy
+        isn't proven on this symbol."""
+        if not getattr(config, "STRATEGY_WHITELIST_ENABLED", True):
+            return True
+        rules   = getattr(config, "STRATEGY_SYMBOL_RULES", {})
+        allowed = rules.get(strategy)
+        if allowed is None or "*" in allowed:
+            return True
+        return symbol in allowed
+
+    def _confirms_direction(self, df, direction: str) -> bool:
+        """Require the most recently CLOSED candle to move in the signal
+        direction. iloc[-1] in MT5 data is the still-forming bar; iloc[-2]
+        is the last completed candle."""
+        if not getattr(config, "ENTRY_CONFIRMATION_ENABLED", True):
+            return True
+        if df is None or len(df) < 3:
+            return True
+        last_closed = df.iloc[-2]
+        if direction == "BUY":
+            return last_closed["Close"] > last_closed["Open"]
+        if direction == "SELL":
+            return last_closed["Close"] < last_closed["Open"]
+        return True
+
+    def _filter(self, sig: Signal, symbol: str, df) -> Signal:
+        """Apply both gates (whitelist + confirmation) to any candidate
+        signal before returning it. Returns NONE_SIGNAL if blocked."""
+        if sig.direction == "NONE":
+            return sig
+        if not self._is_allowed(sig.strategy, symbol):
+            return NONE_SIGNAL
+        if not self._confirms_direction(df, sig.direction):
+            return NONE_SIGNAL
+        return sig
+
     def get_signal(self, symbol: str) -> Signal:
 
         # ── Boom, Crash, and Jump indices (spike reversal) ───
@@ -43,7 +82,10 @@ class SignalEngine:
             sym_info = mt5c.get_symbol_info(symbol)
             if not sym_info:
                 return NONE_SIGNAL
-            return self._bc.generate_signal(df, symbol, sym_info["ask"])
+            return self._filter(
+                self._bc.generate_signal(df, symbol, sym_info["ask"]),
+                symbol, df,
+            )
 
         # ── All other symbols (Forex + Volatility indices) ────
         df = mt5c.get_candles(symbol, config.SIGNAL_TF, config.LOOKBACK_CANDLES)
@@ -59,7 +101,10 @@ class SignalEngine:
         # 1. Try SMC first — highest quality signal
         smc_sig = self._smc.generate_signal(df, symbol, price)
         if smc_sig.direction != "NONE":
-            return smc_sig
+            filtered = self._filter(smc_sig, symbol, df)
+            if filtered.direction != "NONE":
+                return filtered
+            # SMC blocked — fall through to classic TA below
 
         # 2. Fall back to classic TA strategies
         ema_sig   = self._ema.generate_signal(df, symbol, price)
@@ -78,15 +123,15 @@ class SignalEngine:
             best = max(buys, key=lambda s: s.strength)
             if best.strength < config.MIN_SIGNAL_STRENGTH_AGREEMENT:
                 return NONE_SIGNAL
-            return best
+            return self._filter(best, symbol, df)
         if len(sells) == 2:
             best = max(sells, key=lambda s: s.strength)
             if best.strength < config.MIN_SIGNAL_STRENGTH_AGREEMENT:
                 return NONE_SIGNAL
-            return best
+            return self._filter(best, symbol, df)
 
         # Only one fires — require much higher strength
         best = max(candidates, key=lambda s: s.strength)
         if best.strength < config.MIN_SIGNAL_STRENGTH_SOLO:
             return NONE_SIGNAL
-        return best
+        return self._filter(best, symbol, df)

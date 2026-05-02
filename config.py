@@ -243,6 +243,62 @@ ATR_TP_MULTIPLIER = 3.0   # TP = 3.0 × ATR  (1:2 risk-reward)
 
 LOOKBACK_CANDLES = 300
 
+# ── STRATEGY-SYMBOL WHITELIST ────────────────────────────────
+# Derived from real performance data: each strategy is only allowed to
+# fire on the symbols it has actually been profitable on.  Signals on
+# any other symbol are silently dropped before reaching the trade engine.
+# Use ["*"] to allow a strategy on all symbols.
+STRATEGY_WHITELIST_ENABLED = True
+STRATEGY_SYMBOL_RULES = {
+    # Spike_Reversal: profitable on Boom 1000 (+$493). Marginal on Jump 25/50.
+    # Loses heavily on Crash variants and Boom 500/300.
+    "Spike_Reversal": [
+        "Boom 1000 Index",
+        "Jump 25 Index",
+        "Jump 50 Index",
+    ],
+
+    # SMC: clean structure works on Forex, Metals, and calm synthetics.
+    # Has lost heavily on Volatility 75/100 (whipsaw structure).
+    "SMC": [
+        # Forex
+        "EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD", "USDCAD", "NZDUSD",
+        "GBPJPY", "EURJPY", "EURGBP", "GBPAUD", "AUDJPY",
+        # Metals
+        "XAUUSD", "XAGUSD",
+        # Calm synthetics where SMC has been profitable
+        "Step Index", "Range Break 100 Index", "Range Break 200 Index",
+        "Volatility 10 Index", "Volatility 25 Index",
+        "Volatility 25 (1s) Index",
+    ],
+
+    # EMA_Crossover & RSI_Bollinger: 100% win rate in history — quality
+    # filter is built-in (signal strength + agreement check). No restriction.
+    "EMA_Crossover": ["*"],
+    "RSI_Bollinger": ["*"],
+}
+
+# ── PER-STRATEGY PROTECTION OVERRIDES ────────────────────────
+# SMC trades develop slowly and need room to breathe.  Default 25%
+# drawdown / $1 breakeven thresholds close them at $5 average win,
+# while losses run to full SL ($43 avg).  Looser thresholds let
+# winners develop into bigger gains.
+LOCK_OVERRIDES_BY_STRATEGY = {
+    "SMC": {
+        "PEAK_DRAWDOWN_PERCENT":           40.0,   # vs default 25
+        "PEAK_DRAWDOWN_MIN_PROFIT_USD":    5.0,    # vs default 1
+        "BREAKEVEN_LOCK_AFTER_PROFIT_USD": 5.0,    # vs default 1
+        "MAX_TP_EXTENSIONS":               3,      # vs default 1 — let it ride
+    },
+}
+
+# ── ENTRY CONFIRMATION (momentum candle) ──────────────────────
+# Require the most recently CLOSED candle to confirm the signal direction
+# before opening.  BUY signals need a bullish closed candle; SELL needs
+# bearish.  Filters out noise entries where the bot reacts to a
+# half-formed pattern that immediately reverses.
+ENTRY_CONFIRMATION_ENABLED = True
+
 # ── BOT OPERATION ────────────────────────────────────────────
 SCAN_INTERVAL_SECONDS = 60
 MAGIC_NUMBER          = 20240101

@@ -37,9 +37,12 @@ class TradeMonitor:
         # Original SL recorded when each trade was opened
         # Needed because after break-even moves, we lose the original 1R distance
         self._original_sl:  dict[int, float] = {}
-        self._tp_extended:  set[int]         = set()
+        # ticket -> number of times TP has been extended (default cap 1, SMC=3)
+        self._tp_extended:  dict[int, int]   = {}
         # Highest USD profit each ticket has reached (for peak-drawdown lock)
         self._peak_profit:  dict[int, float] = {}
+        # ticket -> strategy name, so locks can apply per-strategy overrides
+        self._strategies:   dict[int, str]   = {}
         self._fast_guard_started = False
         # Tickets seen open on the previous fast-guard tick — used to detect
         # closures within ~1s and write them to the DB immediately
@@ -47,27 +50,43 @@ class TradeMonitor:
 
     # ── Bookkeeping ───────────────────────────────────────────
 
-    def record_new_trade(self, ticket: int, original_sl: float):
+    def record_new_trade(self, ticket: int, original_sl: float, strategy: str = ""):
         self._original_sl[ticket] = original_sl
+        if strategy:
+            self._strategies[ticket] = strategy
 
     def forget_trade(self, ticket: int):
         self._original_sl.pop(ticket, None)
-        self._tp_extended.discard(ticket)
+        self._tp_extended.pop(ticket, None)
         self._peak_profit.pop(ticket, None)
+        self._strategies.pop(ticket, None)
         try:
             db.delete_peak(ticket)
         except Exception:
             pass
 
     def load_peaks_from_db(self):
-        """Restore peak-profit memory from the DB so the drawdown lock
-        still knows each open trade's historical high after a restart."""
+        """Restore peak-profit memory and per-trade strategy from the DB
+        so locks (and per-strategy overrides) still work after a restart."""
         try:
             self._peak_profit.update(db.get_all_peaks())
+            # Restore strategies for currently-open trades
+            for t in db.get_open_trades():
+                if t.get("strategy"):
+                    self._strategies[t["ticket"]] = t["strategy"]
             if self._peak_profit:
                 logger.info(f"  Restored peaks for {len(self._peak_profit)} trade(s) from DB")
+            if self._strategies:
+                logger.info(f"  Restored strategies for {len(self._strategies)} trade(s) from DB")
         except Exception as e:
-            logger.error(f"Could not load peaks from DB: {e}")
+            logger.error(f"Could not load peaks/strategies from DB: {e}")
+
+    def _override(self, ticket: int, key: str, default):
+        """Returns the per-strategy override for a given lock parameter,
+        or the global default if the strategy has no override."""
+        strategy  = self._strategies.get(ticket, "")
+        overrides = getattr(config, "LOCK_OVERRIDES_BY_STRATEGY", {})
+        return overrides.get(strategy, {}).get(key, default)
 
     def cleanup_closed_trades(self, live_tickets: set[int]):
         """Remove any bookkeeping for tickets that no longer exist."""
@@ -344,7 +363,8 @@ class TradeMonitor:
         """
         ticket    = position["ticket"]
         profit    = position["profit"]
-        threshold = getattr(config, "BREAKEVEN_LOCK_AFTER_PROFIT_USD", 1.0)
+        threshold = self._override(ticket, "BREAKEVEN_LOCK_AFTER_PROFIT_USD",
+                                    getattr(config, "BREAKEVEN_LOCK_AFTER_PROFIT_USD", 1.0))
         peak      = self._peak_profit.get(ticket, 0.0)
 
         if peak < threshold:
@@ -428,8 +448,10 @@ class TradeMonitor:
         """
         ticket  = position["ticket"]
         profit  = position["profit"]
-        min_pk  = getattr(config, "PEAK_DRAWDOWN_MIN_PROFIT_USD", 1.0)
-        pct     = getattr(config, "PEAK_DRAWDOWN_PERCENT", 25.0)
+        min_pk  = self._override(ticket, "PEAK_DRAWDOWN_MIN_PROFIT_USD",
+                                  getattr(config, "PEAK_DRAWDOWN_MIN_PROFIT_USD", 1.0))
+        pct     = self._override(ticket, "PEAK_DRAWDOWN_PERCENT",
+                                  getattr(config, "PEAK_DRAWDOWN_PERCENT", 25.0))
 
         # Track the all-time high — including negatives, so the history
         # chart and "peaked at" label reflect the trade's actual best moment.
@@ -510,9 +532,11 @@ class TradeMonitor:
     # ── TP extension when momentum is still strong ────────────
 
     def _maybe_extend_tp(self, position: dict):
-        ticket = position["ticket"]
-        if ticket in self._tp_extended:
-            return   # only extend once per trade
+        ticket    = position["ticket"]
+        extended  = self._tp_extended.get(ticket, 0)
+        max_ext   = self._override(ticket, "MAX_TP_EXTENSIONS", 1)
+        if extended >= max_ext:
+            return   # already extended the allowed number of times
 
         sym = mt5c.get_symbol_info(position["symbol"])
         if not sym:
@@ -557,11 +581,11 @@ class TradeMonitor:
             if rsi_now > 60 and rsi_now > rsi_ref:
                 new_tp = tp + one_r
                 if tm.modify_tp(ticket, new_tp):
-                    self._tp_extended.add(ticket)
+                    self._tp_extended[ticket] = extended + 1
                     logger.tm_tp_extended(position["symbol"], new_tp)
         else:
             if rsi_now < 40 and rsi_now < rsi_ref:
                 new_tp = tp - one_r
                 if tm.modify_tp(ticket, new_tp):
-                    self._tp_extended.add(ticket)
+                    self._tp_extended[ticket] = extended + 1
                     logger.tm_tp_extended(position["symbol"], new_tp)

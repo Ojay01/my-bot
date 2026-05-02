@@ -329,7 +329,7 @@ def run():
                             tp       = signal.tp_price,
                             strategy = signal.strategy,
                         )
-                        monitor.record_new_trade(result["ticket"], signal.sl_price)
+                        monitor.record_new_trade(result["ticket"], signal.sl_price, signal.strategy)
                         db.log_trade_open(
                             result["ticket"], symbol, signal.direction, lot,
                             result["price"], signal.sl_price, signal.tp_price,
