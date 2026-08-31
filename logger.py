@@ -119,7 +119,7 @@ def scan_skipped(symbol: str, reason: str):
 # ── Account snapshot ─────────────────────────────────────────
 
 def account_snapshot(balance: float, equity: float, profit: float,
-                     target: float):
+                     target: float, start_balance: float = 0.0):
     profit_str = (Fore.GREEN if profit >= 0 else Fore.RED) + f"{profit:+.2f}" + Style.RESET_ALL
 
     header = (f"\n  Balance: ${balance:.2f}   Equity (incl open trades): ${equity:.2f}   "
@@ -129,12 +129,16 @@ def account_snapshot(balance: float, equity: float, profit: float,
         _log.info(header + "\n")
         return
 
-    # Demo accounts often start at $10,000 — the $50 target is then meaningless
-    # so show something sensible instead of a 20,000% bar.
-    if balance >= target * 5:
+    # On accounts already above the target (e.g. a $10,000 demo with a $50
+    # goal), absolute progress is meaningless — show profit made THIS RUN
+    # toward the goal instead.
+    if start_balance >= target:
+        made = balance - start_balance
+        pct  = max(0.0, min(made / target * 100, 100))
+        filled = int(30 * pct / 100)
+        bar    = Fore.GREEN + "#" * filled + Style.RESET_ALL + "-" * (30 - filled)
         _log.info(header +
-            f"\n  {Fore.CYAN}Target ${target:.0f} already exceeded "
-            f"(you have ${balance:.2f}){Style.RESET_ALL}\n")
+            f"\n  Profit this run: ${made:+.2f} of ${target:.0f} goal [{bar}] {pct:.1f}%\n")
         return
 
     pct     = balance / target * 100

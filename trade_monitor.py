@@ -47,6 +47,11 @@ class TradeMonitor:
         # Tickets seen open on the previous fast-guard tick — used to detect
         # closures within ~1s and write them to the DB immediately
         self._last_seen_tickets: set[int] = set()
+        # Account-level profit protection ("don't be greedy"):
+        # starting capital (persisted once per account) and the equity
+        # peak reached after passing the profit target.
+        self._capital_baseline: float | None = None
+        self._run_peak_equity:  float = 0.0
 
     # ── Bookkeeping ───────────────────────────────────────────
 
@@ -279,6 +284,14 @@ class TradeMonitor:
         while True:
             try:
                 positions = mt5c.get_open_positions()
+                acc_info  = mt5c.get_account_info()
+                balance   = acc_info["balance"] if acc_info else 0.0
+
+                # 0a. Account-level giveback lock — target passed, equity
+                #     falling back from its peak: close EVERYTHING.
+                if self._check_account_giveback(acc_info, positions):
+                    time.sleep(interval_sec)
+                    continue
 
                 # 0. Detect trades that closed since last tick — write to DB
                 #    so the trades page shows the real status within ~1s
@@ -297,11 +310,11 @@ class TradeMonitor:
                     if p["ticket"] not in current:
                         continue
                     if getattr(config, "BREAKEVEN_LOCK_ENABLED", True):
-                        if self._check_breakeven_lock(p):
+                        if self._check_breakeven_lock(p, balance):
                             closed_this_tick.add(p["ticket"])
                             continue
                     if getattr(config, "PEAK_DRAWDOWN_PROTECTION_ENABLED", False):
-                        if self._check_peak_drawdown(p):
+                        if self._check_peak_drawdown(p, balance):
                             closed_this_tick.add(p["ticket"])
 
                 # 2. History snapshots — one row per open trade per tick.
@@ -334,6 +347,68 @@ class TradeMonitor:
                 logger.error(f"Peak-drawdown guard error: {e}")
             time.sleep(interval_sec)
 
+    # ── Account-level giveback lock ("don't be greedy") ───────
+
+    def _lock_key(self, suffix: str) -> str:
+        return f"_{suffix}_{config.MT5_LOGIN}"
+
+    def _check_account_giveback(self, acc_info: dict | None,
+                                positions: list[dict]) -> bool:
+        """
+        Percent-based account protection:
+          target = starting capital × (1 + PROFIT_TARGET_PERCENT).
+          Once equity has PASSED the target, track its peak; if equity
+          falls ACCOUNT_GIVEBACK_PERCENT below that peak, close every
+          open trade and set a persistent 'profit locked' flag that
+          stops the bot opening new trades.
+        Returns True when the lock is active (positions were closed).
+        """
+        pct = float(getattr(config, "ACCOUNT_GIVEBACK_PERCENT", 0) or 0)
+        if pct <= 0 or acc_info is None:
+            return False
+
+        # Already locked?  Keep enforcing: nothing may stay open.
+        if db.get_setting(self._lock_key("PROFIT_LOCKED"), False):
+            for p in positions:
+                self._force_close(p, "profit already locked in")
+            return bool(positions)
+
+        # Starting capital — recorded once per account, survives restarts
+        if self._capital_baseline is None:
+            stored = db.get_setting(self._lock_key("CAPITAL_BASELINE"), None)
+            if stored is None:
+                stored = float(acc_info["balance"])
+                db.set_setting(self._lock_key("CAPITAL_BASELINE"), stored)
+            self._capital_baseline = float(stored)
+            self._run_peak_equity = float(
+                db.get_setting(self._lock_key("RUN_PEAK"), 0.0) or 0.0)
+
+        target = self._capital_baseline * (
+            1.0 + float(getattr(config, "PROFIT_TARGET_PERCENT", 50.0)) / 100.0)
+        equity = acc_info["equity"]
+
+        if equity > self._run_peak_equity and equity >= target:
+            self._run_peak_equity = equity
+            try:
+                db.set_setting(self._lock_key("RUN_PEAK"), float(equity))
+            except Exception:
+                pass
+
+        if self._run_peak_equity < target:
+            return False   # target not reached yet — normal rules apply
+
+        trigger = self._run_peak_equity * (1.0 - pct / 100.0)
+        if equity <= trigger:
+            logger.error(
+                f"  ACCOUNT GIVEBACK LOCK: equity ${equity:.2f} fell {pct:.0f}% "
+                f"from peak ${self._run_peak_equity:.2f} (target was ${target:.2f}). "
+                f"Closing ALL trades and locking in profit.")
+            for p in positions:
+                self._force_close(p, "account giveback lock")
+            db.set_setting(self._lock_key("PROFIT_LOCKED"), True)
+            return True
+        return False
+
     # ── Robust close with retry ───────────────────────────────
 
     def _force_close(self, position: dict, reason: str) -> bool:
@@ -354,18 +429,20 @@ class TradeMonitor:
 
     # ── Breakeven safety lock ─────────────────────────────────
 
-    def _check_breakeven_lock(self, position: dict) -> bool:
+    def _check_breakeven_lock(self, position: dict, balance: float = 0.0) -> bool:
         """
-        Once a trade's peak profit has crossed BREAKEVEN_LOCK_AFTER_PROFIT_USD,
-        force-close immediately if profit drops to $0 or below.  Guarantees
-        no profitable trade ever closes at a loss.
+        Once a trade's peak profit has crossed BREAKEVEN_LOCK_AFTER_PROFIT_PCT
+        (% of balance), force-close immediately if profit drops to $0 or
+        below.  Guarantees no profitable trade ever closes at a loss.
 
         Returns True if the trade was closed.
         """
         ticket    = position["ticket"]
         profit    = position["profit"]
-        threshold = self._override(ticket, "BREAKEVEN_LOCK_AFTER_PROFIT_USD",
-                                    getattr(config, "BREAKEVEN_LOCK_AFTER_PROFIT_USD", 1.0))
+        pct       = self._override(ticket, "BREAKEVEN_LOCK_AFTER_PROFIT_PCT",
+                                    getattr(config, "BREAKEVEN_LOCK_AFTER_PROFIT_PCT", 0.5))
+        # Percent of balance; if balance unknown, fall back to $1
+        threshold = balance * pct / 100.0 if balance > 0 else 1.0
         peak      = self._peak_profit.get(ticket, 0.0)
 
         if peak < threshold:
@@ -436,23 +513,24 @@ class TradeMonitor:
         except Exception as e:
             logger.error(f"  DB write failed for close of ticket {position['ticket']}: {e}")
 
-    def _check_peak_drawdown(self, position: dict) -> bool:
+    def _check_peak_drawdown(self, position: dict, balance: float = 0.0) -> bool:
         """
         Track each trade's all-time-high USD profit.  If current profit
         drops by PEAK_DRAWDOWN_PERCENT from that peak, close the trade
         immediately to lock in what's left.  Only starts tracking once
-        the peak has cleared PEAK_DRAWDOWN_MIN_PROFIT_USD so trivial
-        sub-dollar swings don't trigger it.
+        the peak has cleared PEAK_DRAWDOWN_MIN_PROFIT_PCT (% of balance)
+        so trivial swings don't trigger it.
 
         Returns True if the trade was closed (caller should stop
         managing this position for the rest of the cycle).
         """
         ticket  = position["ticket"]
         profit  = position["profit"]
-        min_pk  = self._override(ticket, "PEAK_DRAWDOWN_MIN_PROFIT_USD",
-                                  getattr(config, "PEAK_DRAWDOWN_MIN_PROFIT_USD", 1.0))
+        min_pct = self._override(ticket, "PEAK_DRAWDOWN_MIN_PROFIT_PCT",
+                                  getattr(config, "PEAK_DRAWDOWN_MIN_PROFIT_PCT", 0.5))
+        min_pk  = balance * min_pct / 100.0 if balance > 0 else 1.0
         pct     = self._override(ticket, "PEAK_DRAWDOWN_PERCENT",
-                                  getattr(config, "PEAK_DRAWDOWN_PERCENT", 25.0))
+                                  getattr(config, "PEAK_DRAWDOWN_PERCENT", 15.0))
 
         # Track the all-time high — including negatives, so the history
         # chart and "peaked at" label reflect the trade's actual best moment.

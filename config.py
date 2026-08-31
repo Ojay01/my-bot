@@ -13,7 +13,18 @@ MT5_SERVER   = "Deriv-Demo"   # Server name shown in your MT5 app
 RISK_PERCENT     = 1.0   # % of balance risked per trade (1% recommended)
 DAILY_LOSS_LIMIT = 5.0   # Stop trading today if daily loss hits this %
                          # (checked against EQUITY, so open losses count)
-PROFIT_TARGET_USD= 50.0  # Bot alerts when balance reaches this
+# ── PROFIT TARGET (percent of starting capital) ──────────────
+# Goal: grow the account by this %.  $100 capital + 50% = $150 target.
+# Starting capital is recorded automatically the first time the bot runs
+# on an account.  All targets scale with whatever you deposit.
+PROFIT_TARGET_PERCENT = 50.0
+
+# Don't be greedy — account level.  Once the target has been PASSED, the
+# bot tracks the account's peak equity; if equity gives back this % from
+# that peak, it CLOSES ALL TRADES and stops opening new ones.
+# Example: capital $100, target $150, equity runs to $300 (peak), then
+# falls 15% to $255 -> everything is closed, profit locked in.
+ACCOUNT_GIVEBACK_PERCENT = 15.0
 
 # Hard cap on the TOTAL amount at risk at once: the combined loss if
 # every open trade hit its SL may not exceed this % of balance.
@@ -66,8 +77,9 @@ PROFIT_PROTECTION_ENABLED = True
 # Only kicks in once profit has reached PEAK_DRAWDOWN_MIN_PROFIT_USD,
 # so tiny $0.20 swings don't trigger it.
 PEAK_DRAWDOWN_PROTECTION_ENABLED = True
-PEAK_DRAWDOWN_PERCENT            = 25.0   # close when profit falls this % from its peak
-PEAK_DRAWDOWN_MIN_PROFIT_USD     = 1.0    # don't track until peak reaches at least this much
+PEAK_DRAWDOWN_PERCENT            = 15.0   # close when profit falls this % from its peak
+PEAK_DRAWDOWN_MIN_PROFIT_PCT     = 0.5    # arm only once peak profit >= this % of balance
+                                          # (percent-based so it scales with account size)
 
 # Breakeven safety lock — the "no losses after profits" rule.
 # Once a trade's peak profit reaches BREAKEVEN_LOCK_AFTER_PROFIT_USD,
@@ -76,7 +88,7 @@ PEAK_DRAWDOWN_MIN_PROFIT_USD     = 1.0    # don't track until peak reaches at le
 # of where the broker's stop-loss is.  Last-resort safety net behind
 # the peak-drawdown lock.
 BREAKEVEN_LOCK_ENABLED          = True
-BREAKEVEN_LOCK_AFTER_PROFIT_USD = 1.0
+BREAKEVEN_LOCK_AFTER_PROFIT_PCT = 0.5   # % of balance — arm once profit reaches this
 
 # Per-second profit history: the fast guard saves a snapshot of every open
 # trade's profit/peak/price each second so you can review the curve later
@@ -295,9 +307,9 @@ STRATEGY_SYMBOL_RULES = {
 # winners develop into bigger gains.
 LOCK_OVERRIDES_BY_STRATEGY = {
     "SMC": {
-        "PEAK_DRAWDOWN_PERCENT":           40.0,   # vs default 25
-        "PEAK_DRAWDOWN_MIN_PROFIT_USD":    5.0,    # vs default 1
-        "BREAKEVEN_LOCK_AFTER_PROFIT_USD": 5.0,    # vs default 1
+        "PEAK_DRAWDOWN_PERCENT":           25.0,   # vs default 15 — needs room
+        "PEAK_DRAWDOWN_MIN_PROFIT_PCT":    1.0,    # vs default 0.5 (% of balance)
+        "BREAKEVEN_LOCK_AFTER_PROFIT_PCT": 1.0,    # vs default 0.5 (% of balance)
         "MAX_TP_EXTENSIONS":               3,      # vs default 1 — let it ride
     },
 }

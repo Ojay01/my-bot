@@ -280642,3 +280642,1094 @@ Bot stopped by user.
 12:34:15  127.0.0.1 - - [31/Aug/2026 12:34:15] "GET /api/live HTTP/1.1" 200 -
 12:34:17  127.0.0.1 - - [31/Aug/2026 12:34:17] "GET /api/live HTTP/1.1" 200 -
 12:34:17  127.0.0.1 - - [31/Aug/2026 12:34:17] "GET /api/live HTTP/1.1" 200 -
+12:34:19  127.0.0.1 - - [31/Aug/2026 12:34:19] "GET /api/live HTTP/1.1" 200 -
+12:34:19  127.0.0.1 - - [31/Aug/2026 12:34:19] "GET /api/live HTTP/1.1" 200 -
+12:34:21  127.0.0.1 - - [31/Aug/2026 12:34:21] "GET /api/live HTTP/1.1" 200 -
+12:34:21  127.0.0.1 - - [31/Aug/2026 12:34:21] "GET /api/live HTTP/1.1" 200 -
+12:34:23  127.0.0.1 - - [31/Aug/2026 12:34:23] "GET /api/live HTTP/1.1" 200 -
+12:34:23  127.0.0.1 - - [31/Aug/2026 12:34:23] "GET /api/live HTTP/1.1" 200 -
+12:34:25  127.0.0.1 - - [31/Aug/2026 12:34:25] "GET /api/live HTTP/1.1" 200 -
+12:34:25  127.0.0.1 - - [31/Aug/2026 12:34:25] "GET /api/live HTTP/1.1" 200 -
+12:34:27  127.0.0.1 - - [31/Aug/2026 12:34:27] "GET /api/live HTTP/1.1" 200 -
+12:34:27  127.0.0.1 - - [31/Aug/2026 12:34:27] "GET /api/live HTTP/1.1" 200 -
+12:34:29  127.0.0.1 - - [31/Aug/2026 12:34:29] "GET /api/live HTTP/1.1" 200 -
+12:34:29  127.0.0.1 - - [31/Aug/2026 12:34:29] "GET /api/live HTTP/1.1" 200 -
+12:34:31  127.0.0.1 - - [31/Aug/2026 12:34:31] "GET /api/live HTTP/1.1" 200 -
+12:34:31  127.0.0.1 - - [31/Aug/2026 12:34:31] "GET /api/live HTTP/1.1" 200 -
+12:34:33  127.0.0.1 - - [31/Aug/2026 12:34:33] "GET /api/live HTTP/1.1" 200 -
+12:34:33  127.0.0.1 - - [31/Aug/2026 12:34:33] "GET /api/live HTTP/1.1" 200 -
+12:34:35  127.0.0.1 - - [31/Aug/2026 12:34:35] "GET /api/live HTTP/1.1" 200 -
+12:34:35  127.0.0.1 - - [31/Aug/2026 12:34:35] "GET /api/live HTTP/1.1" 200 -
+12:34:37  127.0.0.1 - - [31/Aug/2026 12:34:37] "GET /api/live HTTP/1.1" 200 -
+12:34:37  127.0.0.1 - - [31/Aug/2026 12:34:37] "GET /api/live HTTP/1.1" 200 -
+12:34:38  ============================================================
+12:34:38    TRADING BOT STARTING
+12:34:38    Symbols    : 30
+12:34:38    Risk/trade : 1.0%
+12:34:38    Max trades : 10
+12:34:38    Target     : $50.0
+12:34:38    Early exit : True
+12:34:38    TP extend  : True
+12:34:38    Web UI     : http://localhost:4000
+12:34:38  ============================================================
+12:34:38  Connecting to MT5 ...
+12:34:38  Connected  |  Account: 32384683  Balance: $10000.00  Currency: USD
+12:34:38    Peak-drawdown guard running every 1s
+12:34:38  
+────────────────────────────────────────────────────────────
+  Cycle 1  |  2026-08-31 11:34:38 UTC
+12:34:38  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:34:38  [36m[1m
+  *** TARGET REACHED!  Balance = $10000.00 ***
+
+12:34:38    11:xx UTC | active sessions: ['LONDON']
+12:34:38    EURUSD                      · no opportunity
+12:34:38    GBPUSD                      · no opportunity
+12:34:38    USDJPY                      · no opportunity
+12:34:38    USDCHF                      · no opportunity
+12:34:38    AUDUSD                      · no opportunity
+12:34:38    USDCAD                      · no opportunity
+12:34:38    NZDUSD                      · no opportunity
+12:34:38    GBPJPY                      · no opportunity
+12:34:38    EURJPY                      · no opportunity
+12:34:38    EURGBP                      · no opportunity
+12:34:38    GBPAUD                      · no opportunity
+12:34:38    AUDJPY                      · no opportunity
+12:34:39  [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4000
+ * Running on http://192.168.2.169:4000
+12:34:39  [33mPress CTRL+C to quit[0m
+12:34:39    XAUUSD                      · no opportunity
+12:34:39    XAGUSD                      · no opportunity
+12:34:39    Volatility 10 Index         · no opportunity
+12:34:39  127.0.0.1 - - [31/Aug/2026 12:34:39] "GET /api/live HTTP/1.1" 200 -
+12:34:39    Volatility 25 Index         · no opportunity
+12:34:39    Volatility 50 Index         · no opportunity
+12:34:39    Volatility 75 Index         · no opportunity
+12:34:39    Volatility 100 Index        · no opportunity
+12:34:39    Volatility 10 (1s) Index    · no opportunity
+12:34:39    Volatility 25 (1s) Index    · no opportunity
+12:34:39    Volatility 50 (1s) Index    · no opportunity
+12:34:39    Volatility 75 (1s) Index    · no opportunity
+12:34:39    Volatility 100 (1s) Index   · no opportunity
+12:34:39    Boom 1000 Index             · no opportunity
+12:34:39    Jump 25 Index               · no opportunity
+12:34:39    Jump 50 Index               · no opportunity
+12:34:39    Step Index                  · no opportunity
+12:34:39    Range Break 100 Index       · no opportunity
+12:34:39    Range Break 200 Index       · no opportunity
+12:34:39    Next scan in 60s ...
+12:34:39  127.0.0.1 - - [31/Aug/2026 12:34:39] "GET /api/live HTTP/1.1" 200 -
+12:34:41  127.0.0.1 - - [31/Aug/2026 12:34:41] "GET /api/live HTTP/1.1" 200 -
+12:34:41  127.0.0.1 - - [31/Aug/2026 12:34:41] "GET /api/live HTTP/1.1" 200 -
+12:34:43  127.0.0.1 - - [31/Aug/2026 12:34:43] "GET /api/live HTTP/1.1" 200 -
+12:34:43  127.0.0.1 - - [31/Aug/2026 12:34:43] "GET /api/live HTTP/1.1" 200 -
+12:34:45  127.0.0.1 - - [31/Aug/2026 12:34:45] "GET /trades HTTP/1.1" 200 -
+12:34:45  127.0.0.1 - - [31/Aug/2026 12:34:45] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+12:34:45  127.0.0.1 - - [31/Aug/2026 12:34:45] "GET /api/live HTTP/1.1" 200 -
+12:34:46  127.0.0.1 - - [31/Aug/2026 12:34:46] "GET /api/live HTTP/1.1" 200 -
+12:34:48  127.0.0.1 - - [31/Aug/2026 12:34:48] "GET /api/live HTTP/1.1" 200 -
+12:34:48  127.0.0.1 - - [31/Aug/2026 12:34:48] "GET /api/live HTTP/1.1" 200 -
+12:34:50  127.0.0.1 - - [31/Aug/2026 12:34:50] "GET /api/live HTTP/1.1" 200 -
+12:34:50  127.0.0.1 - - [31/Aug/2026 12:34:50] "GET /api/live HTTP/1.1" 200 -
+12:34:52  127.0.0.1 - - [31/Aug/2026 12:34:52] "GET /api/live HTTP/1.1" 200 -
+12:34:52  
+────────────────────────────────────────────────────────────
+  Cycle 4  |  2026-08-31 11:34:52 UTC
+12:34:52  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:34:52  [36m[1m
+  *** TARGET REACHED!  Balance = $10000.00 ***
+
+12:34:52    11:xx UTC | active sessions: ['LONDON']
+12:34:52  127.0.0.1 - - [31/Aug/2026 12:34:52] "GET /api/live HTTP/1.1" 200 -
+12:34:52    EURUSD                      · no opportunity
+12:34:52    GBPUSD                      · no opportunity
+12:34:52    USDJPY                      · no opportunity
+12:34:53    USDCHF                      · no opportunity
+12:34:53    AUDUSD                      · no opportunity
+12:34:53    USDCAD                      · no opportunity
+12:34:53    NZDUSD                      · no opportunity
+12:34:53    GBPJPY                      · no opportunity
+12:34:53    EURJPY                      · no opportunity
+12:34:53    EURGBP                      · no opportunity
+12:34:53    GBPAUD                      · no opportunity
+12:34:53    AUDJPY                      · no opportunity
+12:34:53    XAUUSD                      · no opportunity
+12:34:53    XAGUSD                      · no opportunity
+12:34:53    Volatility 10 Index         · no opportunity
+12:34:53    Volatility 25 Index         · no opportunity
+12:34:53    Volatility 50 Index         · no opportunity
+12:34:53    Volatility 75 Index         · no opportunity
+12:34:53    Volatility 100 Index        · no opportunity
+12:34:53    Volatility 10 (1s) Index    · no opportunity
+12:34:53    Volatility 25 (1s) Index    · no opportunity
+12:34:53    Volatility 50 (1s) Index    · no opportunity
+12:34:53    Volatility 75 (1s) Index    · no opportunity
+12:34:53    Volatility 100 (1s) Index   · no opportunity
+12:34:53    Boom 1000 Index             · no opportunity
+12:34:53    Jump 25 Index               · no opportunity
+12:34:53    Jump 50 Index               · no opportunity
+12:34:53    Step Index                  · no opportunity
+12:34:53    Range Break 100 Index       · no opportunity
+12:34:53    Range Break 200 Index       · no opportunity
+12:34:53    Next scan in 60s ...
+12:34:54  127.0.0.1 - - [31/Aug/2026 12:34:54] "GET /api/live HTTP/1.1" 200 -
+12:34:54  127.0.0.1 - - [31/Aug/2026 12:34:54] "GET /api/live HTTP/1.1" 200 -
+12:34:56  127.0.0.1 - - [31/Aug/2026 12:34:56] "GET /api/live HTTP/1.1" 200 -
+12:34:56  127.0.0.1 - - [31/Aug/2026 12:34:56] "GET /api/live HTTP/1.1" 200 -
+12:34:58  127.0.0.1 - - [31/Aug/2026 12:34:58] "GET /api/live HTTP/1.1" 200 -
+12:34:58  127.0.0.1 - - [31/Aug/2026 12:34:58] "GET /api/live HTTP/1.1" 200 -
+12:35:00  127.0.0.1 - - [31/Aug/2026 12:35:00] "GET /api/live HTTP/1.1" 200 -
+12:35:00  127.0.0.1 - - [31/Aug/2026 12:35:00] "GET /api/live HTTP/1.1" 200 -
+12:35:02  127.0.0.1 - - [31/Aug/2026 12:35:02] "GET /api/live HTTP/1.1" 200 -
+12:35:02  127.0.0.1 - - [31/Aug/2026 12:35:02] "GET /api/live HTTP/1.1" 200 -
+12:35:04  127.0.0.1 - - [31/Aug/2026 12:35:04] "GET /api/live HTTP/1.1" 200 -
+12:35:04  127.0.0.1 - - [31/Aug/2026 12:35:04] "GET /api/live HTTP/1.1" 200 -
+12:35:06  127.0.0.1 - - [31/Aug/2026 12:35:06] "GET /api/live HTTP/1.1" 200 -
+12:35:06  127.0.0.1 - - [31/Aug/2026 12:35:06] "GET /api/live HTTP/1.1" 200 -
+12:35:08  127.0.0.1 - - [31/Aug/2026 12:35:08] "GET /api/live HTTP/1.1" 200 -
+12:35:08  127.0.0.1 - - [31/Aug/2026 12:35:08] "GET /api/live HTTP/1.1" 200 -
+12:35:10  127.0.0.1 - - [31/Aug/2026 12:35:10] "GET /api/live HTTP/1.1" 200 -
+12:35:10  127.0.0.1 - - [31/Aug/2026 12:35:10] "GET /api/live HTTP/1.1" 200 -
+12:35:12  127.0.0.1 - - [31/Aug/2026 12:35:12] "GET /api/live HTTP/1.1" 200 -
+12:35:12  127.0.0.1 - - [31/Aug/2026 12:35:12] "GET /api/live HTTP/1.1" 200 -
+12:35:14  127.0.0.1 - - [31/Aug/2026 12:35:14] "GET /api/live HTTP/1.1" 200 -
+12:35:14  127.0.0.1 - - [31/Aug/2026 12:35:14] "GET /api/live HTTP/1.1" 200 -
+12:35:16  127.0.0.1 - - [31/Aug/2026 12:35:16] "GET /trades HTTP/1.1" 200 -
+12:35:16  127.0.0.1 - - [31/Aug/2026 12:35:16] "GET /api/live HTTP/1.1" 200 -
+12:35:16  127.0.0.1 - - [31/Aug/2026 12:35:16] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+12:35:16  127.0.0.1 - - [31/Aug/2026 12:35:16] "GET /api/live HTTP/1.1" 200 -
+12:35:17  127.0.0.1 - - [31/Aug/2026 12:35:17] "GET /api/live HTTP/1.1" 200 -
+12:35:19  127.0.0.1 - - [31/Aug/2026 12:35:19] "GET /api/live HTTP/1.1" 200 -
+12:35:19  127.0.0.1 - - [31/Aug/2026 12:35:19] "GET /api/live HTTP/1.1" 200 -
+12:35:21  127.0.0.1 - - [31/Aug/2026 12:35:21] "GET /api/live HTTP/1.1" 200 -
+12:35:21  127.0.0.1 - - [31/Aug/2026 12:35:21] "GET /api/live HTTP/1.1" 200 -
+12:35:23  127.0.0.1 - - [31/Aug/2026 12:35:23] "GET /api/live HTTP/1.1" 200 -
+12:35:23  127.0.0.1 - - [31/Aug/2026 12:35:23] "GET /api/live HTTP/1.1" 200 -
+12:35:25  127.0.0.1 - - [31/Aug/2026 12:35:25] "GET /api/live HTTP/1.1" 200 -
+12:35:25  127.0.0.1 - - [31/Aug/2026 12:35:25] "GET /api/live HTTP/1.1" 200 -
+12:35:27  127.0.0.1 - - [31/Aug/2026 12:35:27] "GET /api/live HTTP/1.1" 200 -
+12:35:27  127.0.0.1 - - [31/Aug/2026 12:35:27] "GET /api/live HTTP/1.1" 200 -
+12:35:29  127.0.0.1 - - [31/Aug/2026 12:35:29] "GET /api/live HTTP/1.1" 200 -
+12:35:29  127.0.0.1 - - [31/Aug/2026 12:35:29] "GET /api/live HTTP/1.1" 200 -
+12:35:31  127.0.0.1 - - [31/Aug/2026 12:35:31] "GET /api/live HTTP/1.1" 200 -
+12:35:31  127.0.0.1 - - [31/Aug/2026 12:35:31] "GET /api/live HTTP/1.1" 200 -
+12:35:33  127.0.0.1 - - [31/Aug/2026 12:35:33] "GET /api/live HTTP/1.1" 200 -
+12:35:33  127.0.0.1 - - [31/Aug/2026 12:35:33] "GET /api/live HTTP/1.1" 200 -
+12:35:35  127.0.0.1 - - [31/Aug/2026 12:35:35] "GET /api/live HTTP/1.1" 200 -
+12:35:35  127.0.0.1 - - [31/Aug/2026 12:35:35] "GET /api/live HTTP/1.1" 200 -
+12:35:37  127.0.0.1 - - [31/Aug/2026 12:35:37] "GET /api/live HTTP/1.1" 200 -
+12:35:37  127.0.0.1 - - [31/Aug/2026 12:35:37] "GET /api/live HTTP/1.1" 200 -
+12:35:39  127.0.0.1 - - [31/Aug/2026 12:35:39] "GET /api/live HTTP/1.1" 200 -
+12:35:39  
+────────────────────────────────────────────────────────────
+  Cycle 2  |  2026-08-31 11:35:39 UTC
+12:35:39  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:35:39  [36m[1m
+  *** TARGET REACHED!  Balance = $10000.00 ***
+
+12:35:39    11:xx UTC | active sessions: ['LONDON']
+12:35:39    EURUSD                      · no opportunity
+12:35:39    GBPUSD                      · no opportunity
+12:35:39    USDJPY                      · no opportunity
+12:35:39    USDCHF                      · no opportunity
+12:35:39    AUDUSD                      · no opportunity
+12:35:39    USDCAD                      · no opportunity
+12:35:39  127.0.0.1 - - [31/Aug/2026 12:35:39] "GET /api/live HTTP/1.1" 200 -
+12:35:39    NZDUSD                      · no opportunity
+12:35:39    GBPJPY                      · no opportunity
+12:35:39    EURJPY                      · no opportunity
+12:35:39    EURGBP                      · no opportunity
+12:35:40    GBPAUD                      · no opportunity
+12:35:40    AUDJPY                      · no opportunity
+12:35:40    XAUUSD                      · no opportunity
+12:35:40    XAGUSD                      · no opportunity
+12:35:40    Volatility 10 Index         · no opportunity
+12:35:40    Volatility 25 Index         · no opportunity
+12:35:40    Volatility 50 Index         · no opportunity
+12:35:40    Volatility 75 Index         · no opportunity
+12:35:40    Volatility 100 Index        · no opportunity
+12:35:40    Volatility 10 (1s) Index    · no opportunity
+12:35:40    Volatility 25 (1s) Index    · no opportunity
+12:35:40    Volatility 50 (1s) Index    · no opportunity
+12:35:40    Volatility 75 (1s) Index    · no opportunity
+12:35:40    Volatility 100 (1s) Index   · no opportunity
+12:35:40    Boom 1000 Index             · no opportunity
+12:35:40    Jump 25 Index               · no opportunity
+12:35:40    Jump 50 Index               · no opportunity
+12:35:40    Step Index                  · no opportunity
+12:35:40    Range Break 100 Index       · no opportunity
+12:35:40    Range Break 200 Index       · no opportunity
+12:35:40    Next scan in 60s ...
+12:35:41  127.0.0.1 - - [31/Aug/2026 12:35:41] "GET /api/live HTTP/1.1" 200 -
+12:35:41  127.0.0.1 - - [31/Aug/2026 12:35:41] "GET /api/live HTTP/1.1" 200 -
+12:35:43  127.0.0.1 - - [31/Aug/2026 12:35:43] "GET /api/live HTTP/1.1" 200 -
+12:35:43  127.0.0.1 - - [31/Aug/2026 12:35:43] "GET /api/live HTTP/1.1" 200 -
+12:35:45  127.0.0.1 - - [31/Aug/2026 12:35:45] "GET /api/live HTTP/1.1" 200 -
+12:35:45  127.0.0.1 - - [31/Aug/2026 12:35:45] "GET /api/live HTTP/1.1" 200 -
+12:35:47  127.0.0.1 - - [31/Aug/2026 12:35:47] "GET /trades HTTP/1.1" 200 -
+12:35:47  127.0.0.1 - - [31/Aug/2026 12:35:47] "GET /api/live HTTP/1.1" 200 -
+12:35:47  127.0.0.1 - - [31/Aug/2026 12:35:47] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+12:35:47  127.0.0.1 - - [31/Aug/2026 12:35:47] "GET /api/live HTTP/1.1" 200 -
+12:35:48  127.0.0.1 - - [31/Aug/2026 12:35:48] "GET /api/live HTTP/1.1" 200 -
+12:35:50  127.0.0.1 - - [31/Aug/2026 12:35:50] "GET /api/live HTTP/1.1" 200 -
+12:35:50  127.0.0.1 - - [31/Aug/2026 12:35:50] "GET /api/live HTTP/1.1" 200 -
+12:35:52  127.0.0.1 - - [31/Aug/2026 12:35:52] "GET /api/live HTTP/1.1" 200 -
+12:35:52  127.0.0.1 - - [31/Aug/2026 12:35:52] "GET /api/live HTTP/1.1" 200 -
+12:35:53  
+────────────────────────────────────────────────────────────
+  Cycle 5  |  2026-08-31 11:35:53 UTC
+12:35:53  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:35:53  [36m[1m
+  *** TARGET REACHED!  Balance = $10000.00 ***
+
+12:35:53    11:xx UTC | active sessions: ['LONDON']
+12:35:53    EURUSD                      · no opportunity
+12:35:53    GBPUSD                      · no opportunity
+12:35:53    USDJPY                      · no opportunity
+12:35:53    USDCHF                      · no opportunity
+12:35:53    AUDUSD                      · no opportunity
+12:35:53    USDCAD                      · no opportunity
+12:35:53    NZDUSD                      · no opportunity
+12:35:53    GBPJPY                      · no opportunity
+12:35:54    EURJPY                      · no opportunity
+12:35:54    EURGBP                      · no opportunity
+12:35:54    GBPAUD                      · no opportunity
+12:35:54    AUDJPY                      · no opportunity
+12:35:54  127.0.0.1 - - [31/Aug/2026 12:35:54] "GET /api/live HTTP/1.1" 200 -
+12:35:54    XAUUSD                      · no opportunity
+12:35:54    XAGUSD                      · no opportunity
+12:35:54    Volatility 10 Index         · no opportunity
+12:35:54    Volatility 25 Index         · no opportunity
+12:35:54    Volatility 50 Index         · no opportunity
+12:35:54    Volatility 75 Index         · no opportunity
+12:35:54    Volatility 100 Index        · no opportunity
+12:35:54    Volatility 10 (1s) Index    · no opportunity
+12:35:54    Volatility 25 (1s) Index    · no opportunity
+12:35:54    Volatility 50 (1s) Index    · no opportunity
+12:35:54    Volatility 75 (1s) Index    · no opportunity
+12:35:54    Volatility 100 (1s) Index   · no opportunity
+12:35:54    Boom 1000 Index             · no opportunity
+12:35:54    Jump 25 Index               · no opportunity
+12:35:54    Jump 50 Index               · no opportunity
+12:35:54    Step Index                  · no opportunity
+12:35:54    Range Break 100 Index       · no opportunity
+12:35:54    Range Break 200 Index       · no opportunity
+12:35:54    Next scan in 60s ...
+12:35:54  127.0.0.1 - - [31/Aug/2026 12:35:54] "GET /api/live HTTP/1.1" 200 -
+12:35:56  127.0.0.1 - - [31/Aug/2026 12:35:56] "GET /api/live HTTP/1.1" 200 -
+12:35:56  127.0.0.1 - - [31/Aug/2026 12:35:56] "GET /api/live HTTP/1.1" 200 -
+12:35:58  127.0.0.1 - - [31/Aug/2026 12:35:58] "GET /api/live HTTP/1.1" 200 -
+12:35:58  127.0.0.1 - - [31/Aug/2026 12:35:58] "GET /api/live HTTP/1.1" 200 -
+12:36:00  127.0.0.1 - - [31/Aug/2026 12:36:00] "GET /api/live HTTP/1.1" 200 -
+12:36:00  127.0.0.1 - - [31/Aug/2026 12:36:00] "GET /api/live HTTP/1.1" 200 -
+12:36:02  127.0.0.1 - - [31/Aug/2026 12:36:02] "GET /api/live HTTP/1.1" 200 -
+12:36:02  127.0.0.1 - - [31/Aug/2026 12:36:02] "GET /api/live HTTP/1.1" 200 -
+12:36:04  127.0.0.1 - - [31/Aug/2026 12:36:04] "GET /api/live HTTP/1.1" 200 -
+12:36:04  127.0.0.1 - - [31/Aug/2026 12:36:04] "GET /api/live HTTP/1.1" 200 -
+12:36:06  127.0.0.1 - - [31/Aug/2026 12:36:06] "GET /api/live HTTP/1.1" 200 -
+12:36:06  127.0.0.1 - - [31/Aug/2026 12:36:06] "GET /api/live HTTP/1.1" 200 -
+12:36:08  127.0.0.1 - - [31/Aug/2026 12:36:08] "GET /api/live HTTP/1.1" 200 -
+12:36:08  127.0.0.1 - - [31/Aug/2026 12:36:08] "GET /api/live HTTP/1.1" 200 -
+12:36:10  127.0.0.1 - - [31/Aug/2026 12:36:10] "GET /api/live HTTP/1.1" 200 -
+12:36:10  127.0.0.1 - - [31/Aug/2026 12:36:10] "GET /api/live HTTP/1.1" 200 -
+12:36:12  127.0.0.1 - - [31/Aug/2026 12:36:12] "GET /api/live HTTP/1.1" 200 -
+12:36:12  127.0.0.1 - - [31/Aug/2026 12:36:12] "GET /api/live HTTP/1.1" 200 -
+12:36:14  127.0.0.1 - - [31/Aug/2026 12:36:14] "GET /api/live HTTP/1.1" 200 -
+12:36:14  127.0.0.1 - - [31/Aug/2026 12:36:14] "GET /api/live HTTP/1.1" 200 -
+12:36:16  127.0.0.1 - - [31/Aug/2026 12:36:16] "GET /api/live HTTP/1.1" 200 -
+12:36:16  127.0.0.1 - - [31/Aug/2026 12:36:16] "GET /api/live HTTP/1.1" 200 -
+12:36:18  127.0.0.1 - - [31/Aug/2026 12:36:18] "GET /trades HTTP/1.1" 200 -
+12:36:18  127.0.0.1 - - [31/Aug/2026 12:36:18] "GET /api/live HTTP/1.1" 200 -
+12:36:18  127.0.0.1 - - [31/Aug/2026 12:36:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+12:36:18  127.0.0.1 - - [31/Aug/2026 12:36:18] "GET /api/live HTTP/1.1" 200 -
+12:36:19  127.0.0.1 - - [31/Aug/2026 12:36:19] "GET /api/live HTTP/1.1" 200 -
+12:36:21  127.0.0.1 - - [31/Aug/2026 12:36:21] "GET /api/live HTTP/1.1" 200 -
+12:36:21  127.0.0.1 - - [31/Aug/2026 12:36:21] "GET /api/live HTTP/1.1" 200 -
+12:36:23  127.0.0.1 - - [31/Aug/2026 12:36:23] "GET /api/live HTTP/1.1" 200 -
+12:36:23  127.0.0.1 - - [31/Aug/2026 12:36:23] "GET /api/live HTTP/1.1" 200 -
+12:36:25  127.0.0.1 - - [31/Aug/2026 12:36:25] "GET /api/live HTTP/1.1" 200 -
+12:36:25  127.0.0.1 - - [31/Aug/2026 12:36:25] "GET /api/live HTTP/1.1" 200 -
+12:36:27  127.0.0.1 - - [31/Aug/2026 12:36:27] "GET /api/live HTTP/1.1" 200 -
+12:36:27  127.0.0.1 - - [31/Aug/2026 12:36:27] "GET /api/live HTTP/1.1" 200 -
+12:36:29  127.0.0.1 - - [31/Aug/2026 12:36:29] "GET /api/live HTTP/1.1" 200 -
+12:36:29  127.0.0.1 - - [31/Aug/2026 12:36:29] "GET /api/live HTTP/1.1" 200 -
+12:36:31  127.0.0.1 - - [31/Aug/2026 12:36:31] "GET /api/live HTTP/1.1" 200 -
+12:36:31  127.0.0.1 - - [31/Aug/2026 12:36:31] "GET /api/live HTTP/1.1" 200 -
+12:36:33  127.0.0.1 - - [31/Aug/2026 12:36:33] "GET /api/live HTTP/1.1" 200 -
+12:36:33  127.0.0.1 - - [31/Aug/2026 12:36:33] "GET /api/live HTTP/1.1" 200 -
+12:36:35  127.0.0.1 - - [31/Aug/2026 12:36:35] "GET /api/live HTTP/1.1" 200 -
+12:36:35  127.0.0.1 - - [31/Aug/2026 12:36:35] "GET /api/live HTTP/1.1" 200 -
+12:36:37  127.0.0.1 - - [31/Aug/2026 12:36:37] "GET /api/live HTTP/1.1" 200 -
+12:36:37  127.0.0.1 - - [31/Aug/2026 12:36:37] "GET /api/live HTTP/1.1" 200 -
+12:36:39  127.0.0.1 - - [31/Aug/2026 12:36:39] "GET /api/live HTTP/1.1" 200 -
+12:36:39  127.0.0.1 - - [31/Aug/2026 12:36:39] "GET /api/live HTTP/1.1" 200 -
+12:36:40  
+────────────────────────────────────────────────────────────
+  Cycle 3  |  2026-08-31 11:36:40 UTC
+12:36:40  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:36:40  [36m[1m
+  *** TARGET REACHED!  Balance = $10000.00 ***
+
+12:36:40    11:xx UTC | active sessions: ['LONDON']
+12:36:40    EURUSD                      · no opportunity
+12:36:40    GBPUSD                      · no opportunity
+12:36:40    USDJPY                      · no opportunity
+12:36:40    USDCHF                      · no opportunity
+12:36:40    AUDUSD                      · no opportunity
+12:36:40    USDCAD                      · no opportunity
+12:36:40    NZDUSD                      · no opportunity
+12:36:40    GBPJPY                      · no opportunity
+12:36:40    EURJPY                      · no opportunity
+12:36:40    EURGBP                      · no opportunity
+12:36:40    GBPAUD                      · no opportunity
+12:36:40    AUDJPY                      · no opportunity
+12:36:41    XAUUSD                      · no opportunity
+12:36:41    XAGUSD                      · no opportunity
+12:36:41    Volatility 10 Index         · no opportunity
+12:36:41    Volatility 25 Index         · no opportunity
+12:36:41    Volatility 50 Index         · no opportunity
+12:36:41  127.0.0.1 - - [31/Aug/2026 12:36:41] "GET /api/live HTTP/1.1" 200 -
+12:36:41    Volatility 75 Index         · no opportunity
+12:36:41    Volatility 100 Index        · no opportunity
+12:36:41    Volatility 10 (1s) Index    · no opportunity
+12:36:41    Volatility 25 (1s) Index    · no opportunity
+12:36:41    Volatility 50 (1s) Index    · no opportunity
+12:36:41    Volatility 75 (1s) Index    · no opportunity
+12:36:41    Volatility 100 (1s) Index   · no opportunity
+12:36:41    Boom 1000 Index             · no opportunity
+12:36:41    Jump 25 Index               · no opportunity
+12:36:41    Jump 50 Index               · no opportunity
+12:36:41    Step Index                  · no opportunity
+12:36:41    Range Break 100 Index       · no opportunity
+12:36:41    Range Break 200 Index       · no opportunity
+12:36:41    Next scan in 60s ...
+12:39:30  ============================================================
+12:39:30    TRADING BOT STARTING
+12:39:30    Symbols    : 30
+12:39:30    Risk/trade : 1.0%
+12:39:30    Max trades : 10
+12:39:30    Target     : $50.0
+12:39:30    Early exit : True
+12:39:30    TP extend  : True
+12:39:30    Web UI     : http://localhost:4000
+12:39:30  ============================================================
+12:39:30  Connecting to MT5 ...
+12:39:30  Connected  |  Account: 32384683  Balance: $10000.00  Currency: USD
+12:39:30    Peak-drawdown guard running every 1s
+12:39:30  
+────────────────────────────────────────────────────────────
+  Cycle 1  |  2026-08-31 11:39:30 UTC
+12:39:30  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:39:30    11:xx UTC | active sessions: ['LONDON']
+12:39:30    EURUSD                      · no opportunity
+12:39:30    GBPUSD                      · no opportunity
+12:39:30    USDJPY                      · no opportunity
+12:39:30    USDCHF                      · no opportunity
+12:39:30    AUDUSD                      · no opportunity
+12:39:30    USDCAD                      · no opportunity
+12:39:30  [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4000
+ * Running on http://192.168.2.169:4000
+12:39:30    NZDUSD                      · no opportunity
+12:39:30  [33mPress CTRL+C to quit[0m
+12:39:30    GBPJPY                      · no opportunity
+12:39:30    EURJPY                      · no opportunity
+12:39:30    EURGBP                      · no opportunity
+12:39:30    GBPAUD                      · no opportunity
+12:39:30    AUDJPY                      · no opportunity
+12:39:30    XAUUSD                      · no opportunity
+12:39:31    XAGUSD                      · no opportunity
+12:39:31    Volatility 10 Index         · no opportunity
+12:39:31    Volatility 25 Index         · no opportunity
+12:39:31    Volatility 50 Index         · no opportunity
+12:39:31    Volatility 75 Index         · no opportunity
+12:39:31    Volatility 100 Index        · no opportunity
+12:39:31    Volatility 10 (1s) Index    · no opportunity
+12:39:31    Volatility 25 (1s) Index    · no opportunity
+12:39:31    Volatility 50 (1s) Index    · no opportunity
+12:39:31    Volatility 75 (1s) Index    · no opportunity
+12:39:31    Volatility 100 (1s) Index   · no opportunity
+12:39:31    Boom 1000 Index             · no opportunity
+12:39:31    Jump 25 Index               · no opportunity
+12:39:31    Jump 50 Index               · no opportunity
+12:39:31    Step Index                  · no opportunity
+12:39:31    Range Break 100 Index       · no opportunity
+12:39:31    Range Break 200 Index       · no opportunity
+12:39:31    Next scan in 60s ...
+12:40:31  
+────────────────────────────────────────────────────────────
+  Cycle 2  |  2026-08-31 11:40:31 UTC
+12:40:31  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:40:31    11:xx UTC | active sessions: ['LONDON']
+12:40:31    EURUSD                      · no opportunity
+12:40:31    GBPUSD                      · no opportunity
+12:40:31    USDJPY                      · no opportunity
+12:40:31    USDCHF                      · no opportunity
+12:40:32    AUDUSD                      · no opportunity
+12:40:32    USDCAD                      · no opportunity
+12:40:32    NZDUSD                      · no opportunity
+12:40:32    GBPJPY                      · no opportunity
+12:40:32    EURJPY                      · no opportunity
+12:40:32    EURGBP                      · no opportunity
+12:40:32    GBPAUD                      · no opportunity
+12:40:32    AUDJPY                      · no opportunity
+12:40:32    XAUUSD                      · no opportunity
+12:40:33    XAGUSD                      · no opportunity
+12:40:33    Volatility 10 Index         · no opportunity
+12:40:33    Volatility 25 Index         · no opportunity
+12:40:33    Volatility 50 Index         · no opportunity
+12:40:33    Volatility 75 Index         · no opportunity
+12:40:33    Volatility 100 Index        · no opportunity
+12:40:33    Volatility 10 (1s) Index    · no opportunity
+12:40:33    Volatility 25 (1s) Index    · no opportunity
+12:40:33    Volatility 50 (1s) Index    · no opportunity
+12:40:33    Volatility 75 (1s) Index    · no opportunity
+12:40:33    Volatility 100 (1s) Index   · no opportunity
+12:40:33    Boom 1000 Index             · no opportunity
+12:40:33    Jump 25 Index               · no opportunity
+12:40:33    Jump 50 Index               · no opportunity
+12:40:34    Step Index                  · no opportunity
+12:40:34    Range Break 100 Index       · no opportunity
+12:40:34    Range Break 200 Index       · no opportunity
+12:40:34    Next scan in 60s ...
+12:40:42  127.0.0.1 - - [31/Aug/2026 12:40:42] "GET /trades HTTP/1.1" 200 -
+12:40:42  127.0.0.1 - - [31/Aug/2026 12:40:42] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+12:40:42  127.0.0.1 - - [31/Aug/2026 12:40:42] "GET /api/live HTTP/1.1" 200 -
+12:40:43  127.0.0.1 - - [31/Aug/2026 12:40:43] "GET /api/live HTTP/1.1" 200 -
+12:40:45  127.0.0.1 - - [31/Aug/2026 12:40:45] "GET /api/live HTTP/1.1" 200 -
+12:40:45  127.0.0.1 - - [31/Aug/2026 12:40:45] "GET /api/live HTTP/1.1" 200 -
+12:40:47  127.0.0.1 - - [31/Aug/2026 12:40:47] "GET /api/live HTTP/1.1" 200 -
+12:40:47  127.0.0.1 - - [31/Aug/2026 12:40:47] "GET /api/live HTTP/1.1" 200 -
+12:40:49  127.0.0.1 - - [31/Aug/2026 12:40:49] "GET /api/live HTTP/1.1" 200 -
+12:40:49  127.0.0.1 - - [31/Aug/2026 12:40:49] "GET /api/live HTTP/1.1" 200 -
+12:40:51  127.0.0.1 - - [31/Aug/2026 12:40:51] "GET /api/live HTTP/1.1" 200 -
+12:40:51  127.0.0.1 - - [31/Aug/2026 12:40:51] "GET /api/live HTTP/1.1" 200 -
+12:40:52  127.0.0.1 - - [31/Aug/2026 12:40:52] "GET /signals HTTP/1.1" 200 -
+12:40:52  127.0.0.1 - - [31/Aug/2026 12:40:52] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+12:40:57  127.0.0.1 - - [31/Aug/2026 12:40:57] "GET /trades HTTP/1.1" 200 -
+12:40:57  127.0.0.1 - - [31/Aug/2026 12:40:57] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+12:40:58  127.0.0.1 - - [31/Aug/2026 12:40:58] "GET /api/live HTTP/1.1" 200 -
+12:40:58  127.0.0.1 - - [31/Aug/2026 12:40:58] "GET /api/live HTTP/1.1" 200 -
+12:41:00  127.0.0.1 - - [31/Aug/2026 12:41:00] "GET /settings HTTP/1.1" 200 -
+12:41:00  127.0.0.1 - - [31/Aug/2026 12:41:00] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+12:41:00  127.0.0.1 - - [31/Aug/2026 12:41:00] "GET /api/live HTTP/1.1" 200 -
+12:41:06  127.0.0.1 - - [31/Aug/2026 12:41:06] "GET /trades HTTP/1.1" 200 -
+12:41:06  127.0.0.1 - - [31/Aug/2026 12:41:06] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+12:41:07  127.0.0.1 - - [31/Aug/2026 12:41:07] "GET /api/live HTTP/1.1" 200 -
+12:41:07  127.0.0.1 - - [31/Aug/2026 12:41:07] "GET /api/live HTTP/1.1" 200 -
+12:41:09  127.0.0.1 - - [31/Aug/2026 12:41:09] "GET /api/live HTTP/1.1" 200 -
+12:41:09  127.0.0.1 - - [31/Aug/2026 12:41:09] "GET /api/live HTTP/1.1" 200 -
+12:41:10  127.0.0.1 - - [31/Aug/2026 12:41:10] "GET /settings HTTP/1.1" 200 -
+12:41:10  127.0.0.1 - - [31/Aug/2026 12:41:10] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+12:41:34  
+────────────────────────────────────────────────────────────
+  Cycle 3  |  2026-08-31 11:41:34 UTC
+12:41:34  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:41:34    11:xx UTC | active sessions: ['LONDON']
+12:41:34    EURUSD                      · no opportunity
+12:41:34    GBPUSD                      · no opportunity
+12:41:34    USDJPY                      · no opportunity
+12:41:34    USDCHF                      · no opportunity
+12:41:34    AUDUSD                      · no opportunity
+12:41:34    USDCAD                      · no opportunity
+12:41:34    NZDUSD                      · no opportunity
+12:41:35    GBPJPY                      · no opportunity
+12:41:35    EURJPY                      · no opportunity
+12:41:35    EURGBP                      · no opportunity
+12:41:35    GBPAUD                      · no opportunity
+12:41:35    AUDJPY                      · no opportunity
+12:41:35    XAUUSD                      · no opportunity
+12:41:35    XAGUSD                      · no opportunity
+12:41:35    Volatility 10 Index         · no opportunity
+12:41:36    Volatility 25 Index         · no opportunity
+12:41:36    Volatility 50 Index         · no opportunity
+12:41:36    Volatility 75 Index         · no opportunity
+12:41:36    Volatility 100 Index        · no opportunity
+12:41:36    Volatility 10 (1s) Index    · no opportunity
+12:41:36    Volatility 25 (1s) Index    · no opportunity
+12:41:36    Volatility 50 (1s) Index    · no opportunity
+12:41:36    Volatility 75 (1s) Index    · no opportunity
+12:41:36    Volatility 100 (1s) Index   · no opportunity
+12:41:36    Boom 1000 Index             · no opportunity
+12:41:36    Jump 25 Index               · no opportunity
+12:41:36    Jump 50 Index               · no opportunity
+12:41:36    Step Index                  · no opportunity
+12:41:36    Range Break 100 Index       · no opportunity
+12:41:36    Range Break 200 Index       · no opportunity
+12:41:36    Next scan in 60s ...
+12:42:36  
+────────────────────────────────────────────────────────────
+  Cycle 4  |  2026-08-31 11:42:36 UTC
+12:42:36  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:42:36    11:xx UTC | active sessions: ['LONDON']
+12:42:36    EURUSD                      · no opportunity
+12:42:37    GBPUSD                      · no opportunity
+12:42:37    USDJPY                      · no opportunity
+12:42:37    USDCHF                      · no opportunity
+12:42:37    AUDUSD                      · no opportunity
+12:42:37    USDCAD                      · no opportunity
+12:42:37    NZDUSD                      · no opportunity
+12:42:37    GBPJPY                      · no opportunity
+12:42:37    EURJPY                      · no opportunity
+12:42:37    EURGBP                      · no opportunity
+12:42:37    GBPAUD                      · no opportunity
+12:42:37    AUDJPY                      · no opportunity
+12:42:37    XAUUSD                      · no opportunity
+12:42:37    XAGUSD                      · no opportunity
+12:42:37    Volatility 10 Index         · no opportunity
+12:42:37    Volatility 25 Index         · no opportunity
+12:42:37    Volatility 50 Index         · no opportunity
+12:42:37    Volatility 75 Index         · no opportunity
+12:42:37    Volatility 100 Index        · no opportunity
+12:42:37    Volatility 10 (1s) Index    · no opportunity
+12:42:37    Volatility 25 (1s) Index    · no opportunity
+12:42:37    Volatility 50 (1s) Index    · no opportunity
+12:42:37    Volatility 75 (1s) Index    · no opportunity
+12:42:37    Volatility 100 (1s) Index   · no opportunity
+12:42:37    Boom 1000 Index             · no opportunity
+12:42:37    Jump 25 Index               · no opportunity
+12:42:37    Jump 50 Index               · no opportunity
+12:42:37    Step Index                  · no opportunity
+12:42:37    Range Break 100 Index       · no opportunity
+12:42:37    Range Break 200 Index       · no opportunity
+12:42:37    Next scan in 60s ...
+12:43:37  
+────────────────────────────────────────────────────────────
+  Cycle 5  |  2026-08-31 11:43:37 UTC
+12:43:37  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:43:37    11:xx UTC | active sessions: ['LONDON']
+12:43:37    EURUSD                      · no opportunity
+12:43:37    GBPUSD                      · no opportunity
+12:43:38    USDJPY                      · no opportunity
+12:43:38    USDCHF                      · no opportunity
+12:43:38    AUDUSD                      · no opportunity
+12:43:38    USDCAD                      · no opportunity
+12:43:38    NZDUSD                      · no opportunity
+12:43:38    GBPJPY                      · no opportunity
+12:43:38    EURJPY                      · no opportunity
+12:43:38    EURGBP                      · no opportunity
+12:43:38    GBPAUD                      · no opportunity
+12:43:38    AUDJPY                      · no opportunity
+12:43:38    XAUUSD                      · no opportunity
+12:43:38    XAGUSD                      · no opportunity
+12:43:38    Volatility 10 Index         · no opportunity
+12:43:38    Volatility 25 Index         · no opportunity
+12:43:38    Volatility 50 Index         · no opportunity
+12:43:38    Volatility 75 Index         · no opportunity
+12:43:38    Volatility 100 Index        · no opportunity
+12:43:38    Volatility 10 (1s) Index    · no opportunity
+12:43:38    Volatility 25 (1s) Index    · no opportunity
+12:43:38    Volatility 50 (1s) Index    · no opportunity
+12:43:38    Volatility 75 (1s) Index    · no opportunity
+12:43:38    Volatility 100 (1s) Index   · no opportunity
+12:43:38    Boom 1000 Index             · no opportunity
+12:43:38    Jump 25 Index               · no opportunity
+12:43:38    Jump 50 Index               · no opportunity
+12:43:38    Step Index                  · no opportunity
+12:43:38    Range Break 100 Index       · no opportunity
+12:43:38    Range Break 200 Index       · no opportunity
+12:43:38    Next scan in 60s ...
+12:44:38  
+────────────────────────────────────────────────────────────
+  Cycle 6  |  2026-08-31 11:44:38 UTC
+12:44:38  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:44:38    11:xx UTC | active sessions: ['LONDON']
+12:44:38    EURUSD                      · no opportunity
+12:44:38    GBPUSD                      · no opportunity
+12:44:38    USDJPY                      · no opportunity
+12:44:38    USDCHF                      · no opportunity
+12:44:38    AUDUSD                      · no opportunity
+12:44:39    USDCAD                      · no opportunity
+12:44:39    NZDUSD                      · no opportunity
+12:44:39    GBPJPY                      · no opportunity
+12:44:39    EURJPY                      · no opportunity
+12:44:39    EURGBP                      · no opportunity
+12:44:39    GBPAUD                      · no opportunity
+12:44:39    AUDJPY                      · no opportunity
+12:44:39    XAUUSD                      · no opportunity
+12:44:39    XAGUSD                      · no opportunity
+12:44:39    Volatility 10 Index         · no opportunity
+12:44:39    Volatility 25 Index         · no opportunity
+12:44:39    Volatility 50 Index         · no opportunity
+12:44:39    Volatility 75 Index         · no opportunity
+12:44:39    Volatility 100 Index        · no opportunity
+12:44:39    Volatility 10 (1s) Index    · no opportunity
+12:44:39    Volatility 25 (1s) Index    · no opportunity
+12:44:39    Volatility 50 (1s) Index    · no opportunity
+12:44:39    Volatility 75 (1s) Index    · no opportunity
+12:44:39    Volatility 100 (1s) Index   · no opportunity
+12:44:39    Boom 1000 Index             · no opportunity
+12:44:39    Jump 25 Index               · no opportunity
+12:44:39    Jump 50 Index               · no opportunity
+12:44:39    Step Index                  · no opportunity
+12:44:39    Range Break 100 Index       · no opportunity
+12:44:39    Range Break 200 Index       · no opportunity
+12:44:39    Next scan in 60s ...
+12:45:39  
+────────────────────────────────────────────────────────────
+  Cycle 7  |  2026-08-31 11:45:39 UTC
+12:45:39  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:45:39    11:xx UTC | active sessions: ['LONDON']
+12:45:39    EURUSD                      · no opportunity
+12:45:39    GBPUSD                      · no opportunity
+12:45:39    USDJPY                      · no opportunity
+12:45:39    USDCHF                      · no opportunity
+12:45:39    AUDUSD                      · no opportunity
+12:45:39    USDCAD                      · no opportunity
+12:45:39    NZDUSD                      · no opportunity
+12:45:39    GBPJPY                      · no opportunity
+12:45:40    EURJPY                      · no opportunity
+12:45:40    EURGBP                      · no opportunity
+12:45:40    GBPAUD                      · no opportunity
+12:45:40    AUDJPY                      · no opportunity
+12:45:40    XAUUSD                      · no opportunity
+12:45:40    XAGUSD                      · no opportunity
+12:45:40    Volatility 10 Index         · no opportunity
+12:45:40    Volatility 25 Index         · no opportunity
+12:45:40    Volatility 50 Index         · no opportunity
+12:45:40    Volatility 75 Index         · no opportunity
+12:45:40    Volatility 100 Index        · no opportunity
+12:45:40    Volatility 10 (1s) Index    · no opportunity
+12:45:40    Volatility 25 (1s) Index    · no opportunity
+12:45:40    Volatility 50 (1s) Index    · no opportunity
+12:45:40    Volatility 75 (1s) Index    · no opportunity
+12:45:40    Volatility 100 (1s) Index   · no opportunity
+12:45:40    Boom 1000 Index             · no opportunity
+12:45:40    Jump 25 Index               · no opportunity
+12:45:40    Jump 50 Index               · no opportunity
+12:45:40    Step Index                  · no opportunity
+12:45:40    Range Break 100 Index       · no opportunity
+12:45:40    Range Break 200 Index       · no opportunity
+12:45:40    Next scan in 60s ...
+12:46:40  
+────────────────────────────────────────────────────────────
+  Cycle 8  |  2026-08-31 11:46:40 UTC
+12:46:40  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:46:40    11:xx UTC | active sessions: ['LONDON']
+12:46:40    EURUSD                      · no opportunity
+12:46:40    GBPUSD                      · no opportunity
+12:46:40    USDJPY                      · no opportunity
+12:46:40    USDCHF                      · no opportunity
+12:46:40    AUDUSD                      · no opportunity
+12:46:40    USDCAD                      · no opportunity
+12:46:40    NZDUSD                      · no opportunity
+12:46:40    GBPJPY                      · no opportunity
+12:46:40    EURJPY                      · no opportunity
+12:46:40    EURGBP                      · no opportunity
+12:46:41    GBPAUD                      · no opportunity
+12:46:41    AUDJPY                      · no opportunity
+12:46:41    XAUUSD                      · no opportunity
+12:46:41    XAGUSD                      · no opportunity
+12:46:41    Volatility 10 Index         · no opportunity
+12:46:41    Volatility 25 Index         · no opportunity
+12:46:41    Volatility 50 Index         · no opportunity
+12:46:41    Volatility 75 Index         · no opportunity
+12:46:41    Volatility 100 Index        · no opportunity
+12:46:41    Volatility 10 (1s) Index    · no opportunity
+12:46:41    Volatility 25 (1s) Index    · no opportunity
+12:46:41    Volatility 50 (1s) Index    · no opportunity
+12:46:41    Volatility 75 (1s) Index    · no opportunity
+12:46:41    Volatility 100 (1s) Index   · no opportunity
+12:46:41    Boom 1000 Index             · no opportunity
+12:46:41    Jump 25 Index               · no opportunity
+12:46:41    Jump 50 Index               · no opportunity
+12:46:41    Step Index                  · no opportunity
+12:46:41    Range Break 100 Index       · no opportunity
+12:46:41    Range Break 200 Index       · no opportunity
+12:46:41    Next scan in 60s ...
+12:47:41  
+────────────────────────────────────────────────────────────
+  Cycle 9  |  2026-08-31 11:47:41 UTC
+12:47:41  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:47:41    11:xx UTC | active sessions: ['LONDON']
+12:47:41    EURUSD                      · no opportunity
+12:47:41    GBPUSD                      · no opportunity
+12:47:41    USDJPY                      · no opportunity
+12:47:41    USDCHF                      · no opportunity
+12:47:41    AUDUSD                      · no opportunity
+12:47:41    USDCAD                      · no opportunity
+12:47:41    NZDUSD                      · no opportunity
+12:47:41    GBPJPY                      · no opportunity
+12:47:41    EURJPY                      · no opportunity
+12:47:41    EURGBP                      · no opportunity
+12:47:41    GBPAUD                      · no opportunity
+12:47:41    AUDJPY                      · no opportunity
+12:47:41    XAUUSD                      · no opportunity
+12:47:42    XAGUSD                      · no opportunity
+12:47:42    Volatility 10 Index         · no opportunity
+12:47:42    Volatility 25 Index         · no opportunity
+12:47:42    Volatility 50 Index         · no opportunity
+12:47:42    Volatility 75 Index         · no opportunity
+12:47:42    Volatility 100 Index        · no opportunity
+12:47:42    Volatility 10 (1s) Index    · no opportunity
+12:47:42    Volatility 25 (1s) Index    · no opportunity
+12:47:42    Volatility 50 (1s) Index    · no opportunity
+12:47:42    Volatility 75 (1s) Index    · no opportunity
+12:47:42    Volatility 100 (1s) Index   · no opportunity
+12:47:42    Boom 1000 Index             · no opportunity
+12:47:42    Jump 25 Index               · no opportunity
+12:47:42    Jump 50 Index               · no opportunity
+12:47:42    Step Index                  · no opportunity
+12:47:42    Range Break 100 Index       · no opportunity
+12:47:42    Range Break 200 Index       · no opportunity
+12:47:42    Next scan in 60s ...
+12:48:42  
+────────────────────────────────────────────────────────────
+  Cycle 10  |  2026-08-31 11:48:42 UTC
+12:48:42  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:48:42    11:xx UTC | active sessions: ['LONDON']
+12:48:42    EURUSD                      · no opportunity
+12:48:42    GBPUSD                      · no opportunity
+12:48:42    USDJPY                      · no opportunity
+12:48:42    USDCHF                      · no opportunity
+12:48:42    AUDUSD                      · no opportunity
+12:48:42    USDCAD                      · no opportunity
+12:48:42    NZDUSD                      · no opportunity
+12:48:42    GBPJPY                      · no opportunity
+12:48:42    EURJPY                      · no opportunity
+12:48:42    EURGBP                      · no opportunity
+12:48:42    GBPAUD                      · no opportunity
+12:48:42    AUDJPY                      · no opportunity
+12:48:42    XAUUSD                      · no opportunity
+12:48:42    XAGUSD                      · no opportunity
+12:48:42    Volatility 10 Index         · no opportunity
+12:48:42    Volatility 25 Index         · no opportunity
+12:48:42    Volatility 50 Index         · no opportunity
+12:48:42    Volatility 75 Index         · no opportunity
+12:48:43    Volatility 100 Index        · no opportunity
+12:48:43    Volatility 10 (1s) Index    · no opportunity
+12:48:43    Volatility 25 (1s) Index    · no opportunity
+12:48:43    Volatility 50 (1s) Index    · no opportunity
+12:48:43    Volatility 75 (1s) Index    · no opportunity
+12:48:43    Volatility 100 (1s) Index   · no opportunity
+12:48:43    Boom 1000 Index             · no opportunity
+12:48:43    Jump 25 Index               · no opportunity
+12:48:43    Jump 50 Index               · no opportunity
+12:48:43    Step Index                  · no opportunity
+12:48:43    Range Break 100 Index       · no opportunity
+12:48:43    Range Break 200 Index       · no opportunity
+12:48:43    Next scan in 60s ...
+12:49:43  
+────────────────────────────────────────────────────────────
+  Cycle 11  |  2026-08-31 11:49:43 UTC
+12:49:43  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:49:43    11:xx UTC | active sessions: ['LONDON']
+12:49:43    EURUSD                      · no opportunity
+12:49:43    GBPUSD                      · no opportunity
+12:49:43    USDJPY                      · no opportunity
+12:49:43    USDCHF                      · no opportunity
+12:49:43    AUDUSD                      · no opportunity
+12:49:43    USDCAD                      · no opportunity
+12:49:43    NZDUSD                      · no opportunity
+12:49:43    GBPJPY                      · no opportunity
+12:49:43    EURJPY                      · no opportunity
+12:49:43    EURGBP                      · no opportunity
+12:49:43    GBPAUD                      · no opportunity
+12:49:43    AUDJPY                      · no opportunity
+12:49:43    XAUUSD                      · no opportunity
+12:49:43    XAGUSD                      · no opportunity
+12:49:43    Volatility 10 Index         · no opportunity
+12:49:43    Volatility 25 Index         · no opportunity
+12:49:43    Volatility 50 Index         · no opportunity
+12:49:43    Volatility 75 Index         · no opportunity
+12:49:43    Volatility 100 Index        · no opportunity
+12:49:43    Volatility 10 (1s) Index    · no opportunity
+12:49:43    Volatility 25 (1s) Index    · no opportunity
+12:49:44    Volatility 50 (1s) Index    · no opportunity
+12:49:44    Volatility 75 (1s) Index    · no opportunity
+12:49:44    Volatility 100 (1s) Index   · no opportunity
+12:49:44    Boom 1000 Index             · no opportunity
+12:49:44    Jump 25 Index               · no opportunity
+12:49:44    Jump 50 Index               · no opportunity
+12:49:44    Step Index                  · no opportunity
+12:49:44    Range Break 100 Index       · no opportunity
+12:49:44    Range Break 200 Index       · no opportunity
+12:49:44    Next scan in 60s ...
+12:50:44  
+────────────────────────────────────────────────────────────
+  Cycle 12  |  2026-08-31 11:50:44 UTC
+12:50:44  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:50:44    11:xx UTC | active sessions: ['LONDON']
+12:50:44    EURUSD                      · no opportunity
+12:50:44    GBPUSD                      · no opportunity
+12:50:44    USDJPY                      · no opportunity
+12:50:44    USDCHF                      · no opportunity
+12:50:44    AUDUSD                      · no opportunity
+12:50:44    USDCAD                      · no opportunity
+12:50:44    NZDUSD                      · no opportunity
+12:50:44    GBPJPY                      · no opportunity
+12:50:44    EURJPY                      · no opportunity
+12:50:44    EURGBP                      · no opportunity
+12:50:44    GBPAUD                      · no opportunity
+12:50:44    AUDJPY                      · no opportunity
+12:50:44    XAUUSD                      · no opportunity
+12:50:44    XAGUSD                      · no opportunity
+12:50:44    Volatility 10 Index         · no opportunity
+12:50:44    Volatility 25 Index         · no opportunity
+12:50:44    Volatility 50 Index         · no opportunity
+12:50:44    Volatility 75 Index         · no opportunity
+12:50:44    Volatility 100 Index        · no opportunity
+12:50:44    Volatility 10 (1s) Index    · no opportunity
+12:50:44    Volatility 25 (1s) Index    · no opportunity
+12:50:44    Volatility 50 (1s) Index    · no opportunity
+12:50:45    Volatility 75 (1s) Index    · no opportunity
+12:50:45    Volatility 100 (1s) Index   · no opportunity
+12:50:45    Boom 1000 Index             · no opportunity
+12:50:45    Jump 25 Index               · no opportunity
+12:50:45    Jump 50 Index               · no opportunity
+12:50:45    Step Index                  · no opportunity
+12:50:45    Range Break 100 Index       · no opportunity
+12:50:45    Range Break 200 Index       · no opportunity
+12:50:45    Next scan in 60s ...
+12:51:45  
+────────────────────────────────────────────────────────────
+  Cycle 13  |  2026-08-31 11:51:45 UTC
+12:51:45  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:51:45    11:xx UTC | active sessions: ['LONDON']
+12:51:45    EURUSD                      · no opportunity
+12:51:45    GBPUSD                      · no opportunity
+12:51:45    USDJPY                      · no opportunity
+12:51:45    USDCHF                      · no opportunity
+12:51:45    AUDUSD                      · no opportunity
+12:51:45    USDCAD                      · no opportunity
+12:51:45    NZDUSD                      · no opportunity
+12:51:45    GBPJPY                      · no opportunity
+12:51:45    EURJPY                      · no opportunity
+12:51:45    EURGBP                      · no opportunity
+12:51:45    GBPAUD                      · no opportunity
+12:51:45    AUDJPY                      · no opportunity
+12:51:45    XAUUSD                      · no opportunity
+12:51:45    XAGUSD                      · no opportunity
+12:51:45    Volatility 10 Index         · no opportunity
+12:51:45    Volatility 25 Index         · no opportunity
+12:51:45    Volatility 50 Index         · no opportunity
+12:51:45    Volatility 75 Index         · no opportunity
+12:51:45    Volatility 100 Index        · no opportunity
+12:51:45    Volatility 10 (1s) Index    · no opportunity
+12:51:45    Volatility 25 (1s) Index    · no opportunity
+12:51:45    Volatility 50 (1s) Index    · no opportunity
+12:51:45    Volatility 75 (1s) Index    · no opportunity
+12:51:45    Volatility 100 (1s) Index   · no opportunity
+12:51:45    Boom 1000 Index             · no opportunity
+12:51:45    Jump 25 Index               · no opportunity
+12:51:45    Jump 50 Index               · no opportunity
+12:51:46    Step Index                  · no opportunity
+12:51:46    Range Break 100 Index       · no opportunity
+12:51:46    Range Break 200 Index       · no opportunity
+12:51:46    Next scan in 60s ...
+12:52:46  
+────────────────────────────────────────────────────────────
+  Cycle 14  |  2026-08-31 11:52:46 UTC
+12:52:46  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:52:46    11:xx UTC | active sessions: ['LONDON']
+12:52:46    EURUSD                      · no opportunity
+12:52:46    GBPUSD                      · no opportunity
+12:52:46    USDJPY                      · no opportunity
+12:52:46    USDCHF                      · no opportunity
+12:52:46    AUDUSD                      · no opportunity
+12:52:46    USDCAD                      · no opportunity
+12:52:46    NZDUSD                      · no opportunity
+12:52:46    GBPJPY                      · no opportunity
+12:52:46    EURJPY                      · no opportunity
+12:52:46    EURGBP                      · no opportunity
+12:52:46    GBPAUD                      · no opportunity
+12:52:46    AUDJPY                      · no opportunity
+12:52:46    XAUUSD                      · no opportunity
+12:52:46    XAGUSD                      · no opportunity
+12:52:46    Volatility 10 Index         · no opportunity
+12:52:46    Volatility 25 Index         · no opportunity
+12:52:46    Volatility 50 Index         · no opportunity
+12:52:46    Volatility 75 Index         · no opportunity
+12:52:46    Volatility 100 Index        · no opportunity
+12:52:46    Volatility 10 (1s) Index    · no opportunity
+12:52:46    Volatility 25 (1s) Index    · no opportunity
+12:52:46    Volatility 50 (1s) Index    · no opportunity
+12:52:46    Volatility 75 (1s) Index    · no opportunity
+12:52:46    Volatility 100 (1s) Index   · no opportunity
+12:52:46    Boom 1000 Index             · no opportunity
+12:52:46    Jump 25 Index               · no opportunity
+12:52:46    Jump 50 Index               · no opportunity
+12:52:47    Step Index                  · no opportunity
+12:52:47    Range Break 100 Index       · no opportunity
+12:52:47    Range Break 200 Index       · no opportunity
+12:52:47    Next scan in 60s ...
+12:53:47  
+────────────────────────────────────────────────────────────
+  Cycle 15  |  2026-08-31 11:53:47 UTC
+12:53:47  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:53:47    11:xx UTC | active sessions: ['LONDON']
+12:53:47    EURUSD                      · no opportunity
+12:53:47    GBPUSD                      · no opportunity
+12:53:47    USDJPY                      · no opportunity
+12:53:47    USDCHF                      · no opportunity
+12:53:47    AUDUSD                      · no opportunity
+12:53:47    USDCAD                      · no opportunity
+12:53:47    NZDUSD                      · no opportunity
+12:53:47    GBPJPY                      · no opportunity
+12:53:47    EURJPY                      · no opportunity
+12:53:47    EURGBP                      · no opportunity
+12:53:47    GBPAUD                      · no opportunity
+12:53:47    AUDJPY                      · no opportunity
+12:53:47    XAUUSD                      · no opportunity
+12:53:47    XAGUSD                      · no opportunity
+12:53:47    Volatility 10 Index         · no opportunity
+12:53:47    Volatility 25 Index         · no opportunity
+12:53:47    Volatility 50 Index         · no opportunity
+12:53:47    Volatility 75 Index         · no opportunity
+12:53:47    Volatility 100 Index        · no opportunity
+12:53:47    Volatility 10 (1s) Index    · no opportunity
+12:53:47    Volatility 25 (1s) Index    · no opportunity
+12:53:47    Volatility 50 (1s) Index    · no opportunity
+12:53:47    Volatility 75 (1s) Index    · no opportunity
+12:53:47    Volatility 100 (1s) Index   · no opportunity
+12:53:47    Boom 1000 Index             · no opportunity
+12:53:47    Jump 25 Index               · no opportunity
+12:53:47    Jump 50 Index               · no opportunity
+12:53:48    Step Index                  · no opportunity
+12:53:48    Range Break 100 Index       · no opportunity
+12:53:48    Range Break 200 Index       · no opportunity
+12:53:48    Next scan in 60s ...
+12:54:48  
+────────────────────────────────────────────────────────────
+  Cycle 16  |  2026-08-31 11:54:48 UTC
+12:54:48  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:54:48    11:xx UTC | active sessions: ['LONDON']
+12:54:48    EURUSD                      · no opportunity
+12:54:48    GBPUSD                      · no opportunity
+12:54:48    USDJPY                      · no opportunity
+12:54:48    USDCHF                      · no opportunity
+12:54:48    AUDUSD                      · no opportunity
+12:54:48    USDCAD                      · no opportunity
+12:54:48    NZDUSD                      · no opportunity
+12:54:48    GBPJPY                      · no opportunity
+12:54:48    EURJPY                      · no opportunity
+12:54:48    EURGBP                      · no opportunity
+12:54:48    GBPAUD                      · no opportunity
+12:54:48    AUDJPY                      · no opportunity
+12:54:48    XAUUSD                      · no opportunity
+12:54:48    XAGUSD                      · no opportunity
+12:54:48    Volatility 10 Index         · no opportunity
+12:54:48    Volatility 25 Index         · no opportunity
+12:54:48    Volatility 50 Index         · no opportunity
+12:54:48    Volatility 75 Index         · no opportunity
+12:54:48    Volatility 100 Index        · no opportunity
+12:54:48    Volatility 10 (1s) Index    · no opportunity
+12:54:48    Volatility 25 (1s) Index    · no opportunity
+12:54:48    Volatility 50 (1s) Index    · no opportunity
+12:54:48    Volatility 75 (1s) Index    · no opportunity
+12:54:48    Volatility 100 (1s) Index   · no opportunity
+12:54:48    Boom 1000 Index             · no opportunity
+12:54:48    Jump 25 Index               · no opportunity
+12:54:48    Jump 50 Index               · no opportunity
+12:54:48    Step Index                  · no opportunity
+12:54:48    Range Break 100 Index       · no opportunity
+12:54:48    Range Break 200 Index       · no opportunity
+12:54:48    Next scan in 60s ...
+12:55:48  
+────────────────────────────────────────────────────────────
+  Cycle 17  |  2026-08-31 11:55:48 UTC
+12:55:48  
+  Balance: $10000.00   Equity (incl open trades): $10000.00   Open trades P&L: $[32m+0.00[0m
+  [36mTarget $50 already exceeded (you have $10000.00)[0m
+
+12:55:48    11:xx UTC | active sessions: ['LONDON']
+12:55:48    EURUSD                      · no opportunity
+12:55:48    GBPUSD                      · no opportunity
+12:55:49    USDJPY                      · no opportunity
+12:55:49    USDCHF                      · no opportunity
+12:55:49    AUDUSD                      · no opportunity
+12:55:49    USDCAD                      · no opportunity
+12:55:49    NZDUSD                      · no opportunity
+12:55:49    GBPJPY                      · no opportunity
+12:55:49    EURJPY                      · no opportunity
+12:55:49    EURGBP                      · no opportunity
+12:55:49    GBPAUD                      · no opportunity
+12:55:49    AUDJPY                      · no opportunity
+12:55:49    XAUUSD                      · no opportunity
+12:55:49    XAGUSD                      · no opportunity
+12:55:49    Volatility 10 Index         · no opportunity
+12:55:49    Volatility 25 Index         · no opportunity
+12:55:49    Volatility 50 Index         · no opportunity
+12:55:49    Volatility 75 Index         · no opportunity
+12:55:49    Volatility 100 Index        · no opportunity
+12:55:49    Volatility 10 (1s) Index    · no opportunity
+12:55:49    Volatility 25 (1s) Index    · no opportunity
+12:55:49    Volatility 50 (1s) Index    · no opportunity
+12:55:49    Volatility 75 (1s) Index    · no opportunity
+12:55:49    Volatility 100 (1s) Index   · no opportunity
+12:55:49    Boom 1000 Index             · no opportunity
+12:55:49    Jump 25 Index               · no opportunity
+12:55:49    Jump 50 Index               · no opportunity
+12:55:49    Step Index                  · no opportunity
+12:55:49    Range Break 100 Index       · no opportunity
+12:55:49    Range Break 200 Index       · no opportunity
+12:55:49    Next scan in 60s ...
+12:56:21  
+Bot stopped by user.
+12:56:21  MT5 disconnected. Goodbye.

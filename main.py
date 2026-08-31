@@ -148,7 +148,8 @@ def run():
     logger.info(f"  Symbols    : {len(config.ACTIVE_SYMBOLS)}")
     logger.info(f"  Risk/trade : {config.RISK_PERCENT}%")
     logger.info(f"  Max trades : {config.MAX_OPEN_TRADES}")
-    logger.info(f"  Target     : ${config.PROFIT_TARGET_USD}")
+    logger.info(f"  Target     : +{config.PROFIT_TARGET_PERCENT:.0f}% of capital "
+                f"(giveback lock {config.ACCOUNT_GIVEBACK_PERCENT:.0f}%)")
     logger.info(f"  Early exit : {config.EARLY_EXIT_ENABLED}")
     logger.info(f"  TP extend  : {config.TP_EXTENSION_ENABLED}")
     _start_web_ui()
@@ -160,11 +161,25 @@ def run():
         sys.exit(1)
 
     acc = mt5c.get_account_info()
+    start_balance = acc["balance"] if acc else 0.0
     if acc:
         logger.info(
             f"Connected  |  Account: {config.MT5_LOGIN}  "
             f"Balance: ${acc['balance']:.2f}  Currency: {acc['currency']}"
         )
+
+    # Starting capital — recorded once per account (persists across
+    # restarts).  All profit targets are percentages of this.
+    baseline_key = f"_CAPITAL_BASELINE_{config.MT5_LOGIN}"
+    capital = db.get_setting(baseline_key, None)
+    if capital is None and acc:
+        capital = float(acc["balance"])
+        db.set_setting(baseline_key, capital)
+    capital    = float(capital) if capital else start_balance
+    goal_usd   = capital * config.PROFIT_TARGET_PERCENT / 100.0
+    target_usd = capital + goal_usd
+    logger.info(f"  Capital: ${capital:.2f}  ->  target: ${target_usd:.2f} "
+                f"(+{config.PROFIT_TARGET_PERCENT:.0f}%)")
 
     # Reconcile DB ↔ MT5: mark any trades closed externally / while bot was off
     reconcile_open_trades()
@@ -200,9 +215,11 @@ def run():
             if acc:
                 logger.account_snapshot(
                     acc["balance"], acc["equity"],
-                    acc["profit"], config.PROFIT_TARGET_USD
+                    acc["profit"], goal_usd,
+                    capital,
                 )
-                if acc["balance"] >= config.PROFIT_TARGET_USD:
+                # Celebrate only when the +X% target is actually crossed
+                if start_balance < target_usd <= acc["balance"]:
                     logger.target_reached(acc["balance"])
 
             # Sync trade events to DB
@@ -212,6 +229,16 @@ def run():
                 balance = acc["balance"] if acc else 0
                 logger.hard_floor_hit(balance, config.HARD_STOP_BALANCE)
                 manage_open_trades(monitor)
+                time.sleep(config.SCAN_INTERVAL_SECONDS)
+                continue
+
+            # Profit locked in?  (target passed, then giveback protection
+            # fired — set by the fast guard in trade_monitor)
+            if db.get_setting(f"_PROFIT_LOCKED_{config.MT5_LOGIN}", False):
+                logger.info(
+                    "  PROFIT LOCKED IN — target reached and giveback protection "
+                    "fired. No new trades. To start a new run, delete the "
+                    "_PROFIT_LOCKED setting (or ask for a reset).")
                 time.sleep(config.SCAN_INTERVAL_SECONDS)
                 continue
 
