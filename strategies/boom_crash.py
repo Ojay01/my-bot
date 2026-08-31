@@ -32,7 +32,7 @@ class BoomCrashStrategy(BaseStrategy):
 
         spike_body = body.iloc[i]
         avg        = avg_body.iloc[i]
-        atr_now    = atr_v.iloc[-1]
+        atr_now    = atr_v.iloc[-2]   # last closed candle (-1 is still forming)
 
         if pd.isna(avg) or avg == 0 or pd.isna(atr_now) or atr_now == 0:
             return NONE_SIGNAL

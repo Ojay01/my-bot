@@ -11,22 +11,28 @@ MT5_SERVER   = "Deriv-Demo"   # Server name shown in your MT5 app
 
 # ── RISK SETTINGS ────────────────────────────────────────────
 RISK_PERCENT     = 1.0   # % of balance risked per trade (1% recommended)
-DAILY_LOSS_LIMIT = 10.0  # Stop trading today if daily loss hits this %
+DAILY_LOSS_LIMIT = 5.0   # Stop trading today if daily loss hits this %
+                         # (checked against EQUITY, so open losses count)
 PROFIT_TARGET_USD= 50.0  # Bot alerts when balance reaches this
 
+# Hard cap on the TOTAL amount at risk at once: the combined loss if
+# every open trade hit its SL may not exceed this % of balance.
+# Per-trade sizing alone doesn't stop many small risks stacking up.
+MAX_TOTAL_OPEN_RISK_PERCENT = 5.0
+
 # Max open trades — more on demo for testing, fewer on live for safety
-MAX_OPEN_TRADES_DEMO = 25
-MAX_OPEN_TRADES_LIVE = 10
+MAX_OPEN_TRADES_DEMO = 10
+MAX_OPEN_TRADES_LIVE = 5
 MAX_OPEN_TRADES = MAX_OPEN_TRADES_DEMO if "demo" in MT5_SERVER.lower() else MAX_OPEN_TRADES_LIVE
 
-# Max trades allowed on a SINGLE pair (lets you add to positions /
-# fix bad entries with a second setup on the same symbol).
-# Set to 1 to block duplicates, or higher to allow averaging in.
-MAX_TRADES_PER_SYMBOL = 3
+# Max trades allowed on a SINGLE pair.  1 = one position per symbol —
+# no averaging into losers, which is how small accounts die.
+MAX_TRADES_PER_SYMBOL = 1
 
-# Cooldown: 0 = disabled.  Set to N minutes if you want the bot to wait
-# N minutes before opening another trade on the same symbol after one closes.
-SYMBOL_COOLDOWN_MINUTES = 0
+# Cooldown: after a trade closes on a symbol, wait this many minutes
+# before opening another there.  Stops instant re-entry into the same
+# zone right after a loss.  0 = disabled.
+SYMBOL_COOLDOWN_MINUTES = 30
 
 # Signal quality thresholds — THIS is what controls how often the bot
 # finds "valid" signals.  Higher = fewer, better-quality trades.
@@ -186,19 +192,23 @@ ACTIVE_SYMBOLS = [
     "Volatility 100 (1s) Index",
 
     # --- Boom & Crash Indices (Deriv — spike reversal strategy) ---
+    # Only Boom 1000 is whitelisted for Spike_Reversal (see
+    # STRATEGY_SYMBOL_RULES) — the others were scanned every cycle but
+    # every signal was dropped, so they're disabled to save time.
     "Boom 1000 Index",
-    "Boom 500 Index",
-    "Boom 300 Index",
-    "Crash 1000 Index",
-    "Crash 500 Index",
-    "Crash 300 Index",
+    # "Boom 500 Index",
+    # "Boom 300 Index",
+    # "Crash 1000 Index",
+    # "Crash 500 Index",
+    # "Crash 300 Index",
 
     # --- Jump Indices (Deriv — sudden jumps both directions) ---
-    "Jump 10 Index",
+    # Same: only Jump 25 / Jump 50 are whitelisted for Spike_Reversal.
+    # "Jump 10 Index",
     "Jump 25 Index",
     "Jump 50 Index",
-    "Jump 75 Index",
-    "Jump 100 Index",
+    # "Jump 75 Index",
+    # "Jump 100 Index",
 
     # --- Step & Range Break Indices (Deriv) ---
     "Step Index",

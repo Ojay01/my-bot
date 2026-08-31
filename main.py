@@ -35,7 +35,7 @@ def _sync_trade_state(previously_open: set[int]) -> set[int]:
 
     # Newly closed trades
     for ticket in (previously_open - current_tickets):
-        deals = mt5.history_deals_get(ticket=ticket)
+        deals = mt5.history_deals_get(position=ticket)
         if not deals:
             continue
         # Last deal is the close
@@ -81,7 +81,7 @@ def reconcile_open_trades():
 
     for t in orphaned:
         ticket = t["ticket"]
-        deals  = mt5.history_deals_get(ticket=ticket)
+        deals  = mt5.history_deals_get(position=ticket)
 
         if not deals:
             db.log_trade_close(ticket, 0, 0, "closed_unknown",
@@ -286,15 +286,43 @@ def run():
                                        signal.strategy, "skipped", reason)
                         continue
 
-                    sl_dist = abs(signal.sl_price - (
-                        mt5c.get_symbol_info(symbol)["ask"]
-                        if signal.direction == "BUY"
-                        else mt5c.get_symbol_info(symbol)["bid"]
-                    ))
+                    sym_now = mt5c.get_symbol_info(symbol)
+                    if not sym_now:
+                        continue
+                    entry_now = sym_now["ask"] if signal.direction == "BUY" else sym_now["bid"]
+
+                    # SL/TP must be on the correct side of the live price —
+                    # price can move between signal calculation and here,
+                    # and a wrong-side stop gets rejected by the broker.
+                    if signal.direction == "BUY":
+                        valid_stops = signal.sl_price < entry_now and (signal.tp_price == 0 or signal.tp_price > entry_now)
+                    else:
+                        valid_stops = signal.sl_price > entry_now and (signal.tp_price == 0 or signal.tp_price < entry_now)
+                    if not valid_stops:
+                        reason = "SL/TP no longer valid at current price"
+                        logger.scan_skipped(symbol, reason)
+                        db.log_signal(symbol, signal.direction, signal.strength,
+                                       signal.strategy, "skipped", reason)
+                        continue
+
+                    sl_dist = abs(signal.sl_price - entry_now)
 
                     lot = risk.calculate_lot(symbol, sl_dist)
                     if lot == 0.0:
                         reason = "minimum lot size too risky for current balance"
+                        logger.scan_skipped(symbol, reason)
+                        db.log_signal(symbol, signal.direction, signal.strength,
+                                       signal.strategy, "skipped", reason)
+                        continue
+
+                    # Portfolio risk cap — total open risk (all SL distances
+                    # combined) plus this trade must stay under the cap, so
+                    # a cluster of simultaneous losers can't gut the account.
+                    cap = getattr(config, "MAX_TOTAL_OPEN_RISK_PERCENT", 5.0)
+                    open_risk = risk.total_open_risk_percent()
+                    if open_risk + config.RISK_PERCENT > cap:
+                        reason = (f"total open risk {open_risk:.1f}% + new "
+                                  f"{config.RISK_PERCENT:.1f}% would exceed {cap:.1f}% cap")
                         logger.scan_skipped(symbol, reason)
                         db.log_signal(symbol, signal.direction, signal.strength,
                                        signal.strategy, "skipped", reason)

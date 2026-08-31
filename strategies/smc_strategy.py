@@ -99,7 +99,7 @@ class SmcStrategy(BaseStrategy):
 
         # ── Step 7: RSI confirmation on M15 ──────────────────
         rsi_vals = ind.rsi(df_m15["Close"], config.RSI_PERIOD)
-        rsi_now  = rsi_vals.iloc[-1]
+        rsi_now  = rsi_vals.iloc[-2]   # last closed candle (-1 is still forming)
         if pd.isna(rsi_now):
             return NONE_SIGNAL
 
@@ -126,14 +126,17 @@ class SmcStrategy(BaseStrategy):
         # ── Step 9: SL and TP calculation ─────────────────────
         atr_vals = ind.atr(df_m15["High"], df_m15["Low"],
                            df_m15["Close"], config.ATR_PERIOD)
-        atr_now  = atr_vals.iloc[-1]
+        atr_now  = atr_vals.iloc[-2]   # last closed candle
 
         if pd.isna(atr_now) or atr_now == 0:
             return NONE_SIGNAL
 
         if bias == "BULLISH":
-            # SL: just below the OB low (structure-based), fall back to ATR
-            if ob:
+            # SL: just below the OB low (structure-based), fall back to ATR.
+            # Only anchor to the OB when price is actually INSIDE it —
+            # an FVG-triggered entry away from the OB would otherwise get
+            # an SL on the wrong side of the entry price.
+            if ob and in_ob:
                 sl_price = ob.low - atr_now * 0.3
             else:
                 sl_price = current_price - atr_now * config.ATR_SL_MULTIPLIER
@@ -146,7 +149,7 @@ class SmcStrategy(BaseStrategy):
                 tp_price = current_price + atr_now * config.ATR_TP_MULTIPLIER
 
         else:  # BEARISH
-            if ob:
+            if ob and in_ob:
                 sl_price = ob.high + atr_now * 0.3
             else:
                 sl_price = current_price + atr_now * config.ATR_SL_MULTIPLIER

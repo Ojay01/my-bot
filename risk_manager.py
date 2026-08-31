@@ -32,7 +32,7 @@ class RiskManager:
             # We don't know the symbol of the closed one from current_positions,
             # so look it up from MT5 history
             import MetaTrader5 as mt5
-            deals = mt5.history_deals_get(ticket=ticket)
+            deals = mt5.history_deals_get(position=ticket)
             if deals:
                 sym = deals[-1].symbol
                 self._recent_closes[sym] = now
@@ -160,7 +160,18 @@ class RiskManager:
         if today != self._last_checked_date:
             info = mt5c.get_account_info()
             if info:
-                self._daily_start_balance = info["balance"]
+                # Persist the day's starting balance so a bot restart
+                # (start.bat auto-restarts on crash) can't reset the
+                # baseline mid-day and re-allow another full day of loss.
+                import database as db
+                stored = db.get_setting("_DAILY_BASELINE", "")
+                stored_date, _, stored_bal = str(stored).partition("|")
+                if stored_date == today.isoformat() and stored_bal:
+                    self._daily_start_balance = float(stored_bal)
+                else:
+                    self._daily_start_balance = info["balance"]
+                    db.set_setting("_DAILY_BASELINE",
+                                   f"{today.isoformat()}|{info['balance']}")
                 self._last_checked_date = today
                 self._daily_loss_locked = False
 
@@ -171,7 +182,10 @@ class RiskManager:
         info = mt5c.get_account_info()
         if not info or self._daily_start_balance == 0:
             return False
-        loss_pct = ((self._daily_start_balance - info["balance"]) /
+        # Use the worse of balance and equity so open floating losses
+        # count toward the daily limit, not just realized ones.
+        current  = min(info["balance"], info["equity"])
+        loss_pct = ((self._daily_start_balance - current) /
                     self._daily_start_balance) * 100
         if loss_pct >= config.DAILY_LOSS_LIMIT:
             self._daily_loss_locked = True
@@ -218,15 +232,46 @@ class RiskManager:
 
         raw_lot = risk_money / value_per_lot
         step    = sym["volume_step"]
-        lot     = round(raw_lot / step) * step
+        # Round DOWN to the lot step — rounding to nearest can round up and
+        # silently risk more than RISK_PERCENT.
+        lot     = int(raw_lot / step + 1e-9) * step
         lot     = max(sym["volume_min"], min(lot, sym["volume_max"]))
 
-        # Skip if minimum lot risks more than 3× intended (too large for account)
+        # Skip if minimum lot risks more than 2× intended (too large for account)
         actual_risk = (lot / 1.0) * value_per_lot
-        if actual_risk > risk_money * 3:
+        if actual_risk > risk_money * 2:
             return 0.0
 
         return round(lot, 8)
+
+    # ── Portfolio risk cap ────────────────────────────────────
+
+    def total_open_risk_percent(self) -> float:
+        """
+        Sum of what every open trade would lose if its SL were hit,
+        as a % of balance.  Used to cap the TOTAL amount at risk at
+        once — per-trade 1% sizing alone doesn't stop 10 trades from
+        collectively risking 10%+.
+        """
+        info = mt5c.get_account_info()
+        if not info or info["balance"] <= 0:
+            return 0.0
+
+        total = 0.0
+        for p in mt5c.get_open_positions():
+            if p["sl"] == 0:
+                continue   # no SL — can't quantify (shouldn't happen)
+            sym = mt5c.get_symbol_info(p["symbol"])
+            if not sym:
+                continue
+            tick_size  = sym["trade_tick_size"]
+            tick_value = sym["trade_tick_value"]
+            if tick_size <= 0 or tick_value <= 0:
+                continue
+            dist   = abs(p["open_price"] - p["sl"])
+            total += (dist / tick_size) * tick_value * p["volume"]
+
+        return (total / info["balance"]) * 100.0
 
     # ── Break-even trailing stop ──────────────────────────────
 

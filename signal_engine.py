@@ -32,6 +32,11 @@ class SignalEngine:
         self._ema    = EmaCrossoverStrategy()
         self._rsibb  = RsiBollingerStrategy()
         self._bc     = BoomCrashStrategy()
+        # (symbol, strategy) -> candle time of the last signal we returned.
+        # One entry per setup: the same crossover/zone stays "true" on every
+        # 60s scan until the next candle closes — without this the bot
+        # re-enters the identical signal over and over.
+        self._last_signal_bar: dict[tuple[str, str], object] = {}
 
     # ── Whitelist + confirmation helpers ──────────────────────
 
@@ -61,15 +66,35 @@ class SignalEngine:
             return last_closed["Close"] < last_closed["Open"]
         return True
 
-    def _filter(self, sig: Signal, symbol: str, df) -> Signal:
-        """Apply both gates (whitelist + confirmation) to any candidate
-        signal before returning it. Returns NONE_SIGNAL if blocked."""
+    def _filter(self, sig: Signal, symbol: str, df, price: float) -> Signal:
+        """Apply all gates (whitelist, confirmation, one-per-candle dedup,
+        late-entry guard) to any candidate signal before returning it.
+        Returns NONE_SIGNAL if blocked."""
         if sig.direction == "NONE":
             return sig
         if not self._is_allowed(sig.strategy, symbol):
             return NONE_SIGNAL
         if not self._confirms_direction(df, sig.direction):
             return NONE_SIGNAL
+
+        # Late-entry guard: if price already ran more than 40% of the risk
+        # distance beyond the signal candle's close, the good entry is gone
+        # — chasing turns a planned 1:2 R:R into a coin flip.
+        risk_dist = abs(price - sig.sl_price)
+        if risk_dist > 0 and df is not None and len(df) >= 2:
+            last_close = df["Close"].iloc[-2]
+            moved = (price - last_close) if sig.direction == "BUY" else (last_close - price)
+            if moved > 0.4 * risk_dist:
+                return NONE_SIGNAL
+
+        # One signal per candle per strategy (see __init__ note)
+        if df is not None and "time" in df.columns and len(df) >= 2:
+            bar_time = df["time"].iloc[-2]
+            key = (symbol, sig.strategy)
+            if self._last_signal_bar.get(key) == bar_time:
+                return NONE_SIGNAL
+            self._last_signal_bar[key] = bar_time
+
         return sig
 
     def get_signal(self, symbol: str) -> Signal:
@@ -84,7 +109,7 @@ class SignalEngine:
                 return NONE_SIGNAL
             return self._filter(
                 self._bc.generate_signal(df, symbol, sym_info["ask"]),
-                symbol, df,
+                symbol, df, sym_info["ask"],
             )
 
         # ── All other symbols (Forex + Volatility indices) ────
@@ -101,7 +126,7 @@ class SignalEngine:
         # 1. Try SMC first — highest quality signal
         smc_sig = self._smc.generate_signal(df, symbol, price)
         if smc_sig.direction != "NONE":
-            filtered = self._filter(smc_sig, symbol, df)
+            filtered = self._filter(smc_sig, symbol, df, price)
             if filtered.direction != "NONE":
                 return filtered
             # SMC blocked — fall through to classic TA below
@@ -123,15 +148,15 @@ class SignalEngine:
             best = max(buys, key=lambda s: s.strength)
             if best.strength < config.MIN_SIGNAL_STRENGTH_AGREEMENT:
                 return NONE_SIGNAL
-            return self._filter(best, symbol, df)
+            return self._filter(best, symbol, df, price)
         if len(sells) == 2:
             best = max(sells, key=lambda s: s.strength)
             if best.strength < config.MIN_SIGNAL_STRENGTH_AGREEMENT:
                 return NONE_SIGNAL
-            return self._filter(best, symbol, df)
+            return self._filter(best, symbol, df, price)
 
         # Only one fires — require much higher strength
         best = max(candidates, key=lambda s: s.strength)
         if best.strength < config.MIN_SIGNAL_STRENGTH_SOLO:
             return NONE_SIGNAL
-        return self._filter(best, symbol, df)
+        return self._filter(best, symbol, df, price)

@@ -209,21 +209,22 @@ class TradeMonitor:
         ema_fast = ind.ema(df["Close"], config.EMA_FAST)
         ema_slow = ind.ema(df["Close"], config.EMA_SLOW)
 
-        if rsi.iloc[-1] != rsi.iloc[-1]:   # NaN
+        if rsi.iloc[-2] != rsi.iloc[-2]:   # NaN
             return False
 
-        prev = df.iloc[-2]
-        curr = df.iloc[-1]
+        # -1 is the still-forming bar — judge reversal on CLOSED candles only
+        prev = df.iloc[-3]
+        curr = df.iloc[-2]
         signals = 0
 
         if position["type"] == "BUY":
             # 1. RSI was strong, now falling through 50
-            if rsi.iloc[-3] > 60 and rsi.iloc[-1] < 50:
+            if rsi.iloc[-4] > 60 and rsi.iloc[-2] < 50:
                 signals += 1
 
             # 2. Fast EMA crossed below slow EMA
-            if (ema_fast.iloc[-3] >= ema_slow.iloc[-3] and
-                    ema_fast.iloc[-1] < ema_slow.iloc[-1]):
+            if (ema_fast.iloc[-4] >= ema_slow.iloc[-4] and
+                    ema_fast.iloc[-2] < ema_slow.iloc[-2]):
                 signals += 1
 
             # 3. Bearish engulfing candle
@@ -234,11 +235,11 @@ class TradeMonitor:
                 signals += 1
 
         else:   # SELL
-            if rsi.iloc[-3] < 40 and rsi.iloc[-1] > 50:
+            if rsi.iloc[-4] < 40 and rsi.iloc[-2] > 50:
                 signals += 1
 
-            if (ema_fast.iloc[-3] <= ema_slow.iloc[-3] and
-                    ema_fast.iloc[-1] > ema_slow.iloc[-1]):
+            if (ema_fast.iloc[-4] <= ema_slow.iloc[-4] and
+                    ema_fast.iloc[-2] > ema_slow.iloc[-2]):
                 signals += 1
 
             # Bullish engulfing candle
@@ -393,7 +394,7 @@ class TradeMonitor:
         """
         import MetaTrader5 as mt5
         try:
-            deals = mt5.history_deals_get(ticket=ticket)
+            deals = mt5.history_deals_get(position=ticket)
             if not deals:
                 # MT5 doesn't have history yet (rare timing) — skip;
                 # main loop's 60s sync will catch it as backup.
@@ -567,8 +568,8 @@ class TradeMonitor:
             return
 
         rsi_series = ind.rsi(df["Close"], config.RSI_PERIOD)
-        rsi_now    = rsi_series.iloc[-1]
-        rsi_ref    = rsi_series.iloc[-3]
+        rsi_now    = rsi_series.iloc[-2]   # last closed candle
+        rsi_ref    = rsi_series.iloc[-4]
 
         if rsi_now != rsi_now or rsi_ref != rsi_ref:  # NaN check
             return

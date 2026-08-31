@@ -58,9 +58,9 @@ def analyze_structure(df: pd.DataFrame) -> MarketStructure:
     sh_prev, sh_last = swing_highs[-2], swing_highs[-1]
     sl_prev, sl_last = swing_lows[-2],  swing_lows[-1]
 
-    current_close = df["Close"].iloc[-1]
-    current_high  = df["High"].iloc[-1]
-    current_low   = df["Low"].iloc[-1]
+    # -1 is the still-forming bar in MT5 data; BOS/CHOCH must be judged on
+    # the last CLOSED candle or the bias flips on every intra-bar wiggle.
+    current_close = df["Close"].iloc[-2]
 
     # ── Trend detection (higher highs + higher lows = uptrend) ───
     uptrend   = sh_last.price > sh_prev.price and sl_last.price > sl_prev.price

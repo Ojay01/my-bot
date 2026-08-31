@@ -17,7 +17,8 @@ class RsiBollingerStrategy(BaseStrategy):
         upper, mid, lower = ind.bollinger_bands(close, config.BB_PERIOD, config.BB_STD)
         atr_v = ind.atr(df["High"], df["Low"], close, config.ATR_PERIOD)
 
-        i, p = -1, -2
+        # -1 is the still-forming bar in MT5 data — use closed candles only
+        i, p = -2, -3
 
         rsi_now     = rsi.iloc[i]
         lower_now   = lower.iloc[i]
@@ -45,7 +46,9 @@ class RsiBollingerStrategy(BaseStrategy):
                 direction="BUY",
                 sl_price=current_price - sl_dist,
                 tp_price=tp,
-                strength=min((config.RSI_OVERSOLD - rsi_now) / config.RSI_OVERSOLD, 1.0),
+                # Scaled so RSI ~24 = 0.5, RSI ~21 = 0.7 — a real washout,
+                # reachable in practice (old formula needed RSI < 9).
+                strength=min((config.RSI_OVERSOLD - rsi_now) / 12.0, 1.0),
                 strategy=self.name,
             )
 
@@ -60,8 +63,7 @@ class RsiBollingerStrategy(BaseStrategy):
                 direction="SELL",
                 sl_price=current_price + sl_dist,
                 tp_price=tp,
-                strength=min((rsi_now - config.RSI_OVERBOUGHT) /
-                             (100 - config.RSI_OVERBOUGHT), 1.0),
+                strength=min((rsi_now - config.RSI_OVERBOUGHT) / 12.0, 1.0),
                 strategy=self.name,
             )
 

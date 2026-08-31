@@ -10,8 +10,11 @@ def rsi(series: pd.Series, period: int = 14) -> pd.Series:
     delta = series.diff()
     gain  = delta.clip(lower=0)
     loss  = (-delta).clip(lower=0)
-    avg_gain = gain.ewm(span=period, adjust=False).mean()
-    avg_loss = loss.ewm(span=period, adjust=False).mean()
+    # Wilder's smoothing (alpha = 1/period) — the standard RSI formula.
+    # span-based smoothing reacts ~2x faster and makes 30/70 fire on
+    # moves a chart-reading human would not call extreme.
+    avg_gain = gain.ewm(alpha=1 / period, adjust=False).mean()
+    avg_loss = loss.ewm(alpha=1 / period, adjust=False).mean()
     rs = avg_gain / avg_loss.replace(0, np.nan)
     return 100 - (100 / (1 + rs))
 
@@ -31,7 +34,8 @@ def atr(high: pd.Series, low: pd.Series, close: pd.Series,
         (high - prev_close).abs(),
         (low  - prev_close).abs(),
     ], axis=1).max(axis=1)
-    return tr.ewm(span=period, adjust=False).mean()
+    # Wilder's smoothing — standard ATR
+    return tr.ewm(alpha=1 / period, adjust=False).mean()
 
 
 def candle_body(df: pd.DataFrame) -> pd.Series:
