@@ -278332,3 +278332,99 @@ Bot stopped by user.
 13:26:21  127.0.0.1 - - [02/May/2026 13:26:21] "GET /api/live HTTP/1.1" 200 -
 13:26:22  127.0.0.1 - - [02/May/2026 13:26:22] "GET /api/live HTTP/1.1" 200 -
 13:26:23  127.0.0.1 - - [02/May/2026 13:26:23] "GET /api/live HTTP/1.1" 200 -
+11:32:30  ============================================================
+11:32:30    TRADING BOT STARTING
+11:32:30    Symbols    : 38
+11:32:30    Risk/trade : 1.0%
+11:32:30    Max trades : 25
+11:32:30    Target     : $50.0
+11:32:30    Early exit : True
+11:32:30    TP extend  : True
+11:32:31    Web UI     : http://localhost:4000
+11:32:31  ============================================================
+11:32:31  Connecting to MT5 ...
+11:32:31  [31mFailed to connect to MT5. Check credentials in config.py
+11:34:42  ============================================================
+11:34:42    TRADING BOT STARTING
+11:34:42    Symbols    : 38
+11:34:42    Risk/trade : 1.0%
+11:34:42    Max trades : 25
+11:34:42    Target     : $50.0
+11:34:42    Early exit : True
+11:34:42    TP extend  : True
+11:34:42    Web UI     : http://localhost:4000
+11:34:42  ============================================================
+11:34:42  Connecting to MT5 ...
+11:34:42  [31mFailed to connect to MT5. Check credentials in config.py
+11:37:15  ============================================================
+11:37:15    TRADING BOT STARTING
+11:37:15    Symbols    : 38
+11:37:15    Risk/trade : 1.0%
+11:37:15    Max trades : 25
+11:37:15    Target     : $50.0
+11:37:15    Early exit : True
+11:37:15    TP extend  : True
+11:37:15    Web UI     : http://localhost:4000
+11:37:15  ============================================================
+11:37:15  Connecting to MT5 ...
+11:37:15  [31mFailed to connect to MT5. Check credentials in config.py
+11:49:10  ============================================================
+11:49:10    TRADING BOT STARTING
+11:49:10    Symbols    : 38
+11:49:10    Risk/trade : 1.0%
+11:49:10    Max trades : 25
+11:49:10    Target     : $50.0
+11:49:10    Early exit : True
+11:49:10    TP extend  : True
+11:49:10    Web UI     : http://localhost:4000
+11:49:10  ============================================================
+11:49:10  Connecting to MT5 ...
+11:49:10  [31mFailed to connect to MT5. Check credentials in config.py
+11:58:58  ============================================================
+11:58:58    TRADING BOT STARTING
+11:58:58    Symbols    : 38
+11:58:58    Risk/trade : 1.0%
+11:58:58    Max trades : 25
+11:58:58    Target     : $50.0
+11:58:58    Early exit : True
+11:58:58    TP extend  : True
+11:58:58    Web UI     : http://localhost:4000
+11:58:58  ============================================================
+11:58:59  Connecting to MT5 ...
+11:58:59  [31mFailed to connect to MT5. Check credentials in config.py
+12:00:46  ============================================================
+12:00:46    TRADING BOT STARTING
+12:00:46    Symbols    : 38
+12:00:46    Risk/trade : 1.0%
+12:00:46    Max trades : 25
+12:00:46    Target     : $50.0
+12:00:46    Early exit : True
+12:00:46    TP extend  : True
+12:00:46    Web UI     : http://localhost:4000
+12:00:46  ============================================================
+12:00:46  Connecting to MT5 ...
+12:00:46  [31mFailed to connect to MT5. Check credentials in config.py
+12:00:53  ============================================================
+12:00:53    TRADING BOT STARTING
+12:00:53    Symbols    : 38
+12:00:53    Risk/trade : 1.0%
+12:00:53    Max trades : 25
+12:00:53    Target     : $50.0
+12:00:53    Early exit : True
+12:00:53    TP extend  : True
+12:00:53    Web UI     : http://localhost:4000
+12:00:53  ============================================================
+12:00:53  Connecting to MT5 ...
+12:00:53  [31mFailed to connect to MT5. Check credentials in config.py
+12:01:12  ============================================================
+12:01:12    TRADING BOT STARTING
+12:01:12    Symbols    : 38
+12:01:12    Risk/trade : 1.0%
+12:01:12    Max trades : 25
+12:01:12    Target     : $50.0
+12:01:12    Early exit : True
+12:01:12    TP extend  : True
+12:01:12    Web UI     : http://localhost:4000
+12:01:12  ============================================================
+12:01:12  Connecting to MT5 ...
+12:01:12  [31mFailed to connect to MT5. Check credentials in config.py

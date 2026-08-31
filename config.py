@@ -4,7 +4,7 @@
 # =============================================================
 
 # ── MT5 LOGIN CREDENTIALS ────────────────────────────────────
-MT5_LOGIN    = 32188806          # Your Deriv MT5 account number (integer)
+MT5_LOGIN    = 32384683          # Your Deriv MT5 account number (integer)
 MT5_PASSWORD = "Amene&4Sons"   # Your MT5 password
 MT5_SERVER   = "Deriv-Demo"   # Server name shown in your MT5 app
                                  # e.g. "Deriv-Demo" or "Deriv-Server"
