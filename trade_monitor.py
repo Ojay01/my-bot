@@ -108,6 +108,10 @@ class TradeMonitor:
         if config.EARLY_EXIT_ENABLED and self._structure_broken(position):
             if tm.close_trade(ticket):
                 logger.tm_early_exit(position["symbol"])
+                peak = self._peak_profit.get(ticket, position["profit"])
+                self._immediate_close_record(
+                    position, peak, "closed_early_exit",
+                    "early exit: structure broke against position")
                 self.forget_trade(ticket)
                 return
 
@@ -115,6 +119,10 @@ class TradeMonitor:
         if config.PROFIT_PROTECTION_ENABLED and self._profit_threatened(position):
             if tm.close_trade(ticket):
                 logger.tm_profit_locked(position["symbol"])
+                peak = self._peak_profit.get(ticket, position["profit"])
+                self._immediate_close_record(
+                    position, peak, "closed_profit_protect",
+                    "profit protection: momentum reversed while in profit")
                 self.forget_trade(ticket)
                 return
 
@@ -144,6 +152,21 @@ class TradeMonitor:
         if tp != 0:
             return abs(entry - tp) / config.ATR_TP_MULTIPLIER * config.ATR_SL_MULTIPLIER
         return 0.0
+
+    # ── Trade risk in dollars (what the SL would lose) ────────
+
+    def _trade_risk_usd(self, position: dict, balance: float = 0.0) -> float:
+        """Dollar amount this trade loses if its original SL is hit.
+        Arming thresholds are fractions of this, so protection scales
+        with each trade rather than the account balance."""
+        one_r = self._one_r(position)   # price distance
+        if one_r > 0:
+            sym = mt5c.get_symbol_info(position["symbol"])
+            if sym and sym["trade_tick_size"] > 0 and sym["trade_tick_value"] > 0:
+                return (one_r / sym["trade_tick_size"]) * sym["trade_tick_value"] \
+                       * position.get("volume", position.get("lot", 0.0))
+        # Fallback: assume the standard RISK_PERCENT sizing
+        return balance * config.RISK_PERCENT / 100.0 if balance > 0 else 0.0
 
     # ── Early exit: structure break ───────────────────────────
 
@@ -439,10 +462,12 @@ class TradeMonitor:
         """
         ticket    = position["ticket"]
         profit    = position["profit"]
-        pct       = self._override(ticket, "BREAKEVEN_LOCK_AFTER_PROFIT_PCT",
-                                    getattr(config, "BREAKEVEN_LOCK_AFTER_PROFIT_PCT", 0.5))
-        # Percent of balance; if balance unknown, fall back to $1
-        threshold = balance * pct / 100.0 if balance > 0 else 1.0
+        arm_r     = self._override(ticket, "BREAKEVEN_LOCK_AFTER_PROFIT_R",
+                                    getattr(config, "BREAKEVEN_LOCK_AFTER_PROFIT_R", 0.2))
+        risk_usd  = self._trade_risk_usd(position, balance)
+        # Arm once peak profit reached arm_r × the trade's own risk;
+        # if risk can't be determined, fall back to $1
+        threshold = risk_usd * arm_r if risk_usd > 0 else 1.0
         peak      = self._peak_profit.get(ticket, 0.0)
 
         if peak < threshold:
@@ -488,7 +513,11 @@ class TradeMonitor:
             elif "sl" in rl or "stop loss" in rl:
                 status = "closed_sl"
 
+            # The closing fill can land above any 1-second sample — the
+            # true peak is never below the final profit.
             peak = self._peak_profit.get(ticket)
+            if peak is None or profit > peak:
+                peak = profit
             db.log_trade_close(ticket, last.price, profit, status, reason, peak_profit=peak)
             db.delete_peak(ticket)
             self.forget_trade(ticket)
@@ -526,9 +555,10 @@ class TradeMonitor:
         """
         ticket  = position["ticket"]
         profit  = position["profit"]
-        min_pct = self._override(ticket, "PEAK_DRAWDOWN_MIN_PROFIT_PCT",
-                                  getattr(config, "PEAK_DRAWDOWN_MIN_PROFIT_PCT", 0.5))
-        min_pk  = balance * min_pct / 100.0 if balance > 0 else 1.0
+        arm_r   = self._override(ticket, "PEAK_DRAWDOWN_MIN_PROFIT_R",
+                                  getattr(config, "PEAK_DRAWDOWN_MIN_PROFIT_R", 0.2))
+        risk_usd = self._trade_risk_usd(position, balance)
+        min_pk  = risk_usd * arm_r if risk_usd > 0 else 1.0
         pct     = self._override(ticket, "PEAK_DRAWDOWN_PERCENT",
                                   getattr(config, "PEAK_DRAWDOWN_PERCENT", 15.0))
 

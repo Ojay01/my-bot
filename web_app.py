@@ -34,9 +34,9 @@ EDITABLE_SETTINGS = [
     ("PROFIT_PROTECTION_ENABLED",   "Profit protection enabled",      "bool",  "Close when profit + momentum reverse"),
     ("PEAK_DRAWDOWN_PROTECTION_ENABLED","Peak drawdown lock enabled", "bool",  "Close trade if profit drops X% from its peak"),
     ("PEAK_DRAWDOWN_PERCENT",       "Peak drawdown %",                "float", "% drop from peak that triggers a close (e.g. 15)"),
-    ("PEAK_DRAWDOWN_MIN_PROFIT_PCT","Peak drawdown min profit (% bal)","float", "Only kicks in once profit reaches this % of balance"),
+    ("PEAK_DRAWDOWN_MIN_PROFIT_R",  "Peak drawdown arm (× trade risk)","float", "Arms once profit reaches this fraction of the trade's risk (0.2 = 20%)"),
     ("BREAKEVEN_LOCK_ENABLED",      "Breakeven safety lock",          "bool",  "Once trade was in profit, never let it close at a loss"),
-    ("BREAKEVEN_LOCK_AFTER_PROFIT_PCT","Breakeven lock after (% bal)","float", "Lock kicks in once peak reaches this % of balance"),
+    ("BREAKEVEN_LOCK_AFTER_PROFIT_R","Breakeven lock arm (× trade risk)","float", "Arms once peak reaches this fraction of the trade's risk"),
     ("SPREAD_COST_GUARD_ENABLED",   "Spread cost guard",              "bool",  "Skip trade if entry spread cost > X% of balance"),
     ("MAX_SPREAD_COST_PERCENT",     "Max spread cost (%)",            "float", "Skip trade when spread × lot would cost more than this %"),
     ("TP_EXTENSION_ENABLED",        "TP extension enabled",           "bool",  "Extend TP on strong momentum"),
@@ -142,13 +142,26 @@ def trade_history(ticket):
     # Build a simple SVG line chart of profit + peak over time
     chart = _build_profit_svg(snaps) if snaps else None
 
-    final_peak = max((s["peak"] or 0) for s in snaps) if snaps else 0
+    # Highest/lowest must include the FINAL closing profit too — snapshots
+    # are 1-second samples, and a TP/SL fill between ticks can land beyond
+    # anything that was sampled while the trade was open.
+    profits = [(s["profit"] or 0) for s in snaps]
+    peaks   = [(s["peak"]   or 0) for s in snaps]
+    hi_candidates = peaks + profits
+    lo_candidates = list(profits)
+    if trade is not None and trade["profit"] is not None:
+        hi_candidates.append(trade["profit"])
+        lo_candidates.append(trade["profit"])
+    final_peak   = max(hi_candidates) if hi_candidates else 0
+    lowest_point = min(lo_candidates) if lo_candidates else 0
+
     return render_template("trade_history.html",
                            trade=trade,
                            ticket=ticket,
                            snaps=snaps,
                            chart=chart,
-                           final_peak=final_peak)
+                           final_peak=final_peak,
+                           lowest_point=lowest_point)
 
 
 def _build_profit_svg(snaps: list) -> dict:

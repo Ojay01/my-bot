@@ -22,11 +22,15 @@
   </div>
   <div class="stat">
     <div class="stat-label">Status</div>
-    <div class="stat-value">{{ trade.status }}</div>
+    <div class="stat-value">{{ trade.status | replace('_', ' ') }}</div>
   </div>
-  <div class="stat stat-win">
+  <div class="stat {% if final_peak >= 0 %}stat-win{% else %}stat-loss{% endif %}">
     <div class="stat-label">Highest peak</div>
     <div class="stat-value">${{ "%+.2f" | format(final_peak) }}</div>
+  </div>
+  <div class="stat {% if lowest_point < 0 %}stat-loss{% else %}stat-win{% endif %}">
+    <div class="stat-label">Lowest point</div>
+    <div class="stat-value">${{ "%+.2f" | format(lowest_point) }}</div>
   </div>
   {% if trade.profit is not none %}
   <div class="stat {% if trade.profit >= 0 %}stat-win{% else %}stat-loss{% endif %}">

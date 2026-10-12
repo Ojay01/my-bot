@@ -78,8 +78,11 @@ PROFIT_PROTECTION_ENABLED = True
 # so tiny $0.20 swings don't trigger it.
 PEAK_DRAWDOWN_PROTECTION_ENABLED = True
 PEAK_DRAWDOWN_PERCENT            = 15.0   # close when profit falls this % from its peak
-PEAK_DRAWDOWN_MIN_PROFIT_PCT     = 0.5    # arm only once peak profit >= this % of balance
-                                          # (percent-based so it scales with account size)
+PEAK_DRAWDOWN_MIN_PROFIT_R       = 0.15   # arm once peak profit >= this fraction of the
+                                          # TRADE'S OWN RISK (0.15 = 15% of what the SL
+                                          # would lose).  Scales with every account size.
+                                          # Lower = protects earlier but scratches more
+                                          # would-be winners at breakeven.
 
 # Breakeven safety lock — the "no losses after profits" rule.
 # Once a trade's peak profit reaches BREAKEVEN_LOCK_AFTER_PROFIT_USD,
@@ -87,8 +90,8 @@ PEAK_DRAWDOWN_MIN_PROFIT_PCT     = 0.5    # arm only once peak profit >= this % 
 # This guarantees a profitable trade never closes at a loss, regardless
 # of where the broker's stop-loss is.  Last-resort safety net behind
 # the peak-drawdown lock.
-BREAKEVEN_LOCK_ENABLED          = True
-BREAKEVEN_LOCK_AFTER_PROFIT_PCT = 0.5   # % of balance — arm once profit reaches this
+BREAKEVEN_LOCK_ENABLED        = True
+BREAKEVEN_LOCK_AFTER_PROFIT_R = 0.15  # arm once profit >= this fraction of trade risk
 
 # Per-second profit history: the fast guard saves a snapshot of every open
 # trade's profit/peak/price each second so you can review the curve later
@@ -307,10 +310,10 @@ STRATEGY_SYMBOL_RULES = {
 # winners develop into bigger gains.
 LOCK_OVERRIDES_BY_STRATEGY = {
     "SMC": {
-        "PEAK_DRAWDOWN_PERCENT":           25.0,   # vs default 15 — needs room
-        "PEAK_DRAWDOWN_MIN_PROFIT_PCT":    1.0,    # vs default 0.5 (% of balance)
-        "BREAKEVEN_LOCK_AFTER_PROFIT_PCT": 1.0,    # vs default 0.5 (% of balance)
-        "MAX_TP_EXTENSIONS":               3,      # vs default 1 — let it ride
+        "PEAK_DRAWDOWN_PERCENT":         25.0,   # vs default 15 — needs room
+        "PEAK_DRAWDOWN_MIN_PROFIT_R":    0.2,    # vs default 0.15 (fraction of trade risk)
+        "BREAKEVEN_LOCK_AFTER_PROFIT_R": 0.2,    # vs default 0.15
+        "MAX_TP_EXTENSIONS":             3,      # vs default 1 — let it ride
     },
 }
 

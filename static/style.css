@@ -74,6 +74,8 @@ h1 {
   border: 1px solid #30363d;
   border-radius: 8px;
   padding: 1rem 1.25rem;
+  min-width: 0;              /* let grid items shrink instead of overflowing */
+  overflow-wrap: break-word; /* wrap long values like closed_profit_locked */
 }
 
 .stat-label {
@@ -88,6 +90,12 @@ h1 {
   font-size: 1.5rem;
   font-weight: 700;
   color: #f0f6fc;
+  overflow-wrap: anywhere;   /* long single words (statuses) wrap, never clip */
+}
+
+/* Long status strings read better slightly smaller */
+.stat-value:has(+ *), .stat .stat-value {
+  line-height: 1.2;
 }
 
 .stat-win     { border-left: 3px solid #3fb950; }
